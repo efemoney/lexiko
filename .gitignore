@@ -1,0 +1,16 @@
+# android
+**/.idea/caches
+**/.idea/dictionaries
+**/.idea/libraries
+**/.idea/modules
+**/.idea/shelf
+**/.idea/assetWizardSettings.xml
+**/.idea/checkstyle-idea.xml
+**/.idea/dictionaries.xml
+**/.idea/modules.xml
+**/.idea/navEditor.xml
+**/.idea/workspace.xml
+**/.gradle/
+**/build/
+**/captures/
+**/local.properties

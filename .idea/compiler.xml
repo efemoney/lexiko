@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="11">
+      <module name="build-logic.shared" target="11" />
+      <module name="lexiko.core.jvmMain" target="1.8" />
+      <module name="lexiko.core.jvmTest" target="1.8" />
+      <module name="lexiko.engine.jvmMain" target="1.8" />
+      <module name="lexiko.engine.jvmTest" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
