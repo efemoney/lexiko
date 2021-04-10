@@ -12,6 +12,7 @@ gradlePlugin.plugins.create("plugin") {
 
 dependencies {
   api(platform("org.jetbrains.kotlin:kotlin-bom:1.5.0-M2"))
+  api("org.jetbrains.kotlin:kotlin-noarg:1.5.0-M2")
   api("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0-M2")
   api("com.android.tools.build:gradle:7.0.0-alpha14")
   api("com.github.ben-manes:gradle-versions-plugin:0.38.0")

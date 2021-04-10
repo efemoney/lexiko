@@ -20,7 +20,7 @@ dependencies {
 
   // IO (Disk + Networking)
   commonMainImplementation(Deps.okio.multiplatform)
-  commonMainImplementation(Deps.ktor.client.core)
+  commonMainImplementation(Deps.ktor.client)
 
   androidMainImplementation(Deps.okio)
   androidMainImplementation(Deps.okHttp)

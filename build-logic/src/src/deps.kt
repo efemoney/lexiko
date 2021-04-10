@@ -1,8 +1,8 @@
 @file:Suppress("ClassName", "UnstableApiUsage", "unused")
 
 object Versions {
-  const val kotlin = "1.4.32"
-  const val kotlin15 = "1.5.0-M2"
+  const val kotlin = "1.5.0-M2"
+  const val kotlin14 = "1.4.32"
   const val coroutines = "1.4.3"
   const val compose = "1.0.0-beta04"
   const val ktor = "1.5.3"
@@ -11,7 +11,7 @@ object Versions {
   const val okio = "3.0.0-alpha.3"
   const val okhttp = "4.9.1"
   const val retrofit = "2.9.0"
-  const val dagger = "2.33"
+  const val dagger = "2.34"
   const val hilt = "$dagger-beta"
   const val glide = "4.12.0"
   const val material = "1.3.0"
@@ -45,12 +45,12 @@ object Deps {
     }
   }
 
-  object kotlin15 {
-    const val bom = "org.jetbrains.kotlin:kotlin-bom:${Versions.kotlin15}"
+  object kotlin14 {
+    const val bom = "org.jetbrains.kotlin:kotlin-bom:${Versions.kotlin14}"
 
-    object stdlib : Dep("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin15}") {
-      const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:${Versions.kotlin15}"
-      const val jdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin15}"
+    object stdlib : Dep("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin14}") {
+      const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:${Versions.kotlin14}"
+      const val jdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin14}"
     }
   }
 
@@ -70,10 +70,23 @@ object Deps {
   }
 
   object ktor {
+    const val bom = "io.ktor:ktor-bom:${Versions.ktor}"
+    const val auth = "io.ktor:ktor-auth:${Versions.ktor}"
+    const val websockets = "io.ktor:ktor-websockets:${Versions.ktor}"
+    const val locations = "io.ktor:ktor-locations:${Versions.ktor}"
 
-    object client {
-      const val core = "io.ktor:ktor-client-core:${Versions.ktor}"
+    object content {
+      const val moshi = "com.ryanharter.ktor:ktor-moshi:1.0.1"
+    }
+
+    object server : Dep("io.ktor:ktor-server-core:${Versions.ktor}") {
+      const val netty = "io.ktor:ktor-server-netty:${Versions.ktor}"
+      const val moshi = "com.hypercubetools:ktor-moshi-server:2.1.0"
+    }
+
+    object client : Dep("io.ktor:ktor-client-core:${Versions.ktor}") {
       const val okHttp = "io.ktor:ktor-client-okhttp:${Versions.ktor}"
+      const val moshi = "com.hypercubetools:ktor-moshi-client:2.1.0"
     }
   }
 
