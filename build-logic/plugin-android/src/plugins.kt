@@ -1,18 +1,15 @@
 @file:Suppress("UnstableApiUsage", "NOTHING_TO_INLINE")
 
 import com.android.build.api.dsl.ApplicationBuildFeatures
-import com.android.build.api.dsl.BaseFlavor
 import com.android.build.api.dsl.BuildFeatures
 import com.android.build.api.dsl.DynamicFeatureBuildFeatures
 import com.android.build.api.dsl.LibraryBuildFeatures
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
 class AndroidConventionPlugin : Plugin<Project> {
@@ -25,9 +22,8 @@ class AndroidConventionPlugin : Plugin<Project> {
         compileSdkVersion(30)
 
         defaultConfig {
-          minSdkVersion(21)
-          targetSdkVersion(30)
-          multiDexEnabled = true
+          minSdk = 21
+          targetSdk = 30
           vectorDrawables.useSupportLibrary = true
         }
 
@@ -37,7 +33,7 @@ class AndroidConventionPlugin : Plugin<Project> {
 
           // https://developer.android.com/studio/releases/gradle-plugin#j8-library-desugaring
           isCoreLibraryDesugaringEnabled = true
-          target.dependencies { "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:1.1.1") }
+          dependencies { "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:1.1.5") }
         }
 
         buildFeatures.disableAll()
@@ -81,6 +77,13 @@ class AndroidLibraryPlugin : Plugin<Project> {
   override fun apply(target: Project) = with(target) {
     pluginManager.apply(LibraryPlugin::class)
     pluginManager.apply(AndroidConventionPlugin::class)
+
+    // configure<LibraryAndroidComponentsExtension> {
+    //   beforeVariants(
+    //     selector = selector().withBuildType("release"),
+    //     callback = { it.enabled = false }
+    //   )
+    // }
   }
 }
 
@@ -99,9 +102,7 @@ class AndroidComposePlugin : Plugin<Project> {
     pluginManager.withAnyAndroidPlugin {
       android {
         buildFeatures.compose = true
-        composeOptions {
-          kotlinCompilerExtensionVersion = Versions.compose
-        }
+        composeOptions.kotlinCompilerExtensionVersion = Versions.compose
       }
     }
   }

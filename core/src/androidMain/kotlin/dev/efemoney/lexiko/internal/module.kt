@@ -3,27 +3,34 @@ package dev.efemoney.lexiko.internal
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dev.efemoney.lexiko.engine.Games
+import dagger.Reusable
+import dev.efemoney.lexiko.engine.api.Games
+import dev.efemoney.lexiko.engine.api.Players
+import dev.efemoney.lexiko.local.LocalGames
+import dev.efemoney.lexiko.local.LocalPlayers
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
-internal interface LexikoModule {
+internal interface CoreModule {
 
   @Binds
-  fun games(impl: Games): Games
+  fun LocalGames.asGames(): Games
+
+  @Binds
+  fun LocalPlayers.asPlayers(): Players
 
   companion object {
 
     @Provides
-    fun httpClient(authInterceptor: AuthInterceptor) = HttpClient(OkHttp) {
-      engine {
-        clientCacheSize = 0
-        addInterceptor(authInterceptor)
-        addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-      }
+    @Reusable
+    fun okHttpClient() = OkHttpClient.Builder().build()
+
+    @Provides
+    @Reusable
+    fun httpClient(okHttpClient: OkHttpClient) = HttpClient(OkHttp) {
+      engine { preconfigured = okHttpClient }
     }
   }
 }

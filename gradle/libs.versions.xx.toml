@@ -1,5 +1,5 @@
 [versions]
-agp = "7.0.0-alpha14"
+agp = "7.0.0-alpha15"
 kotlin = "1.4.32"
 coroutines = "1.4.3"
 moshi = "1.11.0"
@@ -58,19 +58,19 @@ androidx-lifecycle-viewModel = { module = "androidx.lifecycle:lifecycle-viewmode
 
 [bundles]
 boms = [
-  "kotlin-bom",
-  "kotlinx-coroutines-bom",
+    "kotlin-bom",
+    "kotlinx-coroutines-bom",
 ]
 androidx = [
-  "androidx-core",
-  "androidx-activity",
-  "androidx-appcompat",
-  "androidx-fragment",
-  "androidx-constraintLayout",
-  "androidx-coordinatorLayout",
+    "androidx-core",
+    "androidx-activity",
+    "androidx-appcompat",
+    "androidx-fragment",
+    "androidx-constraintLayout",
+    "androidx-coordinatorLayout",
 ]
 compose = [
-  "androidx-compose-ui-ui",
-  "androidx-compose-material",
+    "androidx-compose-ui-ui",
+    "androidx-compose-material",
 ]
 

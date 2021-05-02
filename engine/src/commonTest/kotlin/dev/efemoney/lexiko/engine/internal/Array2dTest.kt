@@ -1,6 +1,5 @@
-package dev.efemoney.lexiko.engine
+package dev.efemoney.lexiko.engine.internal
 
-import dev.efemoney.lexiko.engine.internal.Array2d
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

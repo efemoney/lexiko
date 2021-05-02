@@ -15,4 +15,5 @@ dependencies {
 
   androidTestImplementation(kotlin("test-junit"))
   androidTestImplementation("junit:junit:4.13.2")
+  androidTestImplementation(Deps.kotlinx.coroutines.test)
 }

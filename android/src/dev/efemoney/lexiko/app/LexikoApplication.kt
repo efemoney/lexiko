@@ -1,14 +1,16 @@
 package dev.efemoney.lexiko.app
 
-import dev.efemoney.lexiko.LexikoComponent
-import android.app.Application as AndroidApplication
+import android.app.Application
+import dev.efemoney.lexiko.DaggerCoreComponent
+import dev.efemoney.lexiko.app.internal.AppComponent
+import dev.efemoney.lexiko.app.internal.DaggerAppComponent
 
-class LexikoApplication : Application, AndroidApplication() {
+class LexikoApplication : Application() {
 
-  lateinit var component: LexikoComponent
+  internal lateinit var component: AppComponent
 
   override fun onCreate() {
     super.onCreate()
-    component = component()
+    component = DaggerAppComponent.factory().create(this, DaggerCoreComponent.create())
   }
 }

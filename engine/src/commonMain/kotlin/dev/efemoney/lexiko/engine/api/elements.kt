@@ -1,4 +1,4 @@
-package dev.efemoney.lexiko.engine
+package dev.efemoney.lexiko.engine.api
 
 import dev.efemoney.lexiko.engine.internal.Array2d
 
@@ -16,7 +16,7 @@ interface Position {
 }
 
 interface Tile {
-  val letter: TileChar
+  val letter: TileLetter
   val value: TileValue
 }
 
@@ -30,9 +30,9 @@ enum class TileMultiplier {
 
 interface TileBag {
   val remainingTileCount: Int
-  fun pickRandomTile(): Tile
+  fun pickRandomTile(): Tile?
 }
 
-inline class TileChar(val value: Char)
+inline class TileLetter(val value: Char)
 
 inline class TileValue(val value: Int)

@@ -13,7 +13,6 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.buildscript
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
@@ -52,6 +51,22 @@ class VersionCatalogFixPlugin @Inject constructor(private val featurePreviews: F
   }
 }
 
+private fun Project.AllTheBoms() = subprojects {
+
+  pluginManager.withAnyPlugin("java", "kotlin") {
+    dependencies {
+      "implementation"(platform(Deps.ktor.bom))
+      "implementation"(platform(Deps.kotlin.bom))
+      "implementation"(platform(Deps.kotlinx.coroutines.bom))
+    }
+  }
+
+  pluginManager.withAnyAndroidPlugin {
+    dependencies {
+      "implementation"(platform(Deps.okHttp.bom))
+    }
+  }
+}
 
 private fun Project.AndroidMultiplatformFix() = subprojects {
   pluginManager.withPlugin("kotlin-multiplatform") {
@@ -68,38 +83,11 @@ private fun Project.AndroidMultiplatformFix() = subprojects {
   }
 }
 
-private fun Project.KotlinConvention() = subprojects {
-  // Cannot use pluginManager as we need this to be lazy and based on KotlinBasePluginWrapper type
-  plugins.withType<KotlinBasePluginWrapper>().configureEach {
-    when (val kotlin = extensions["kotlin"] as KotlinProjectExtension) {
-      is KotlinSingleTargetExtension -> kotlin.target.configureCompilerArgs()
-      is KotlinMultiplatformExtension -> kotlin.targets.configureEach { configureCompilerArgs() }
-    }
-  }
-}
-
 private fun Project.JavaConvention() = subprojects {
   pluginManager.withAnyPlugin("java", "kotlin") {
     configure<JavaPluginExtension> {
       sourceCompatibility = JavaVersion.VERSION_11
       targetCompatibility = JavaVersion.VERSION_11
-    }
-  }
-}
-
-private fun Project.AllTheBoms() = subprojects {
-
-  pluginManager.withAnyPlugin("java", "kotlin") {
-    dependencies {
-      "implementation"(platform(Deps.ktor.bom))
-      "implementation"(platform(Deps.kotlin.bom))
-      "implementation"(platform(Deps.kotlinx.coroutines.bom))
-    }
-  }
-
-  pluginManager.withAnyAndroidPlugin {
-    dependencies {
-      "implementation"(platform(Deps.okHttp.bom))
     }
   }
 }
@@ -118,29 +106,59 @@ private fun Project.KaptConvention() = subprojects {
   }
 }
 
-private fun KotlinTarget.configureCompilerArgs() = compilations.configureEach {
+private fun Project.KotlinConvention() = subprojects {
+  // Cannot use pluginManager as we need this to be lazy and based on KotlinBasePluginWrapper type
+  plugins.withType<KotlinBasePluginWrapper>().configureEach {
+
+    configure<KotlinProjectExtension> {
+
+      val optIns = listOf(
+        "kotlin.RequiresOptIn",
+        "kotlin.ExperimentalStdlibApi",
+        "kotlin.ExperimentalMultiplatform",
+        "kotlin.time.ExperimentalTime",
+        "kotlinx.coroutines.FlowPreview",
+        "kotlinx.coroutines.ExperimentalCoroutinesApi",
+      )
+
+      val languageFeatures = listOf(
+        "InlineClasses",
+        "UnitConversion",
+      )
+
+      sourceSets.configureEach {
+        optIns.forEach(languageSettings::useExperimentalAnnotation)
+        languageFeatures.forEach(languageSettings::enableLanguageFeature)
+      }
+
+      when (this) {
+        is KotlinSingleTargetExtension -> target.configureFreeArgs()
+        is KotlinMultiplatformExtension -> targets.configureEach { configureFreeArgs() }
+      }
+    }
+  }
+}
+
+private fun KotlinTarget.configureFreeArgs() = compilations.configureEach {
+
+  val freeArgs = listOf("-progressive")
+
+  val jvmFreeArgs = listOf(
+    "-Xassertions=jvm", // https://publicobject.com/2019/11/18/kotlins-assert-is-not-like-javas-assert/
+    "-Xemit-jvm-type-annotations", // useful for static analysis tools or annotation processors.
+    "-Xjvm-default=all", // https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
+    "-Xstrict-java-nullability-assertions",
+  )
+
   kotlinOptions {
     verbose = true
-    freeCompilerArgs = freeCompilerArgs + listOf(
-      "-Xinline-classes",
-      "-Xproper-ieee754-comparisons",
-      "-Xopt-in=kotlin.RequiresOptIn",
-      "-Xopt-in=kotlin.ExperimentalStdlibApi",
-      "-Xopt-in=kotlin.time.ExperimentalTime",
-      "-Xopt-in=kotlinx.coroutines.FlowPreview",
-      "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-    )
+    freeCompilerArgs = freeCompilerArgs + freeArgs
 
     if (this is KotlinJvmOptions) {
       useIR = true
-      jvmTarget = "11"
-
-      freeCompilerArgs = freeCompilerArgs + listOf(
-        "-Xassertions=jvm", // https://publicobject.com/2019/11/18/kotlins-assert-is-not-like-javas-assert/
-        "-Xemit-jvm-type-annotations", // useful for static analysis tools or annotation processors.
-        "-Xjvm-default=all", // https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
-        "-Xstrict-java-nullability-assertions",
-      )
+      jvmTarget = "1.8"
+      javaParameters = true
+      freeCompilerArgs = freeCompilerArgs + jvmFreeArgs
     }
   }
 }

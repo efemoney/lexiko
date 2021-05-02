@@ -1,30 +1,30 @@
 @file:Suppress("ClassName", "UnstableApiUsage", "unused")
 
 object Versions {
-  const val kotlin = "1.5.0-M2"
-  const val kotlin14 = "1.4.32"
-  const val coroutines = "1.4.3"
-  const val compose = "1.0.0-beta04"
-  const val ktor = "1.5.3"
+  const val kotlin = "1.4.32"
+  const val coroutines = "1.5.0-RC"
+  const val compose = "1.0.0-beta05"
+  const val coil = "1.2.1"
+  const val accompanist = "0.8.1"
+  const val ktor = "1.5.4"
   const val moshi = "1.12.0"
-  const val moshix = "0.9.2"
-  const val okio = "3.0.0-alpha.3"
+  const val moshix = "0.10.0"
+  const val okio = "3.0.0-alpha.5"
   const val okhttp = "4.9.1"
   const val retrofit = "2.9.0"
-  const val dagger = "2.34"
-  const val hilt = "$dagger-beta"
+  const val dagger = "2.35.1"
   const val glide = "4.12.0"
   const val material = "1.3.0"
   const val timber = "4.7.1"
 
   object androidx {
-    const val core = "1.6.0-alpha01"
-    const val activity = "1.3.0-alpha06"
+    const val core = "1.6.0-alpha02"
+    const val activity = "1.3.0-alpha07"
     const val appcompat = "1.3.0-rc01"
     const val datastore = "1.0.0-alpha07"
     const val constraintLayout = "2.0.4"
     const val coordinatorLayout = "1.1.0"
-    const val fragment = "1.3.2"
+    const val fragment = "1.3.3"
     const val lifecycle = "2.3.0"
     const val navigation = "2.3.5"
     const val preference = "1.1.1"
@@ -33,6 +33,7 @@ object Versions {
 }
 
 object Deps {
+  const val uuid = "com.benasher44:uuid:0.2.4" // "com.benasher44:uuid:0.3.0"
   const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
   const val jsr250 = "javax.annotation:jsr250-api:1.0"
 
@@ -42,15 +43,6 @@ object Deps {
     object stdlib : Dep("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}") {
       const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:${Versions.kotlin}"
       const val jdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
-    }
-  }
-
-  object kotlin14 {
-    const val bom = "org.jetbrains.kotlin:kotlin-bom:${Versions.kotlin14}"
-
-    object stdlib : Dep("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin14}") {
-      const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:${Versions.kotlin14}"
-      const val jdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin14}"
     }
   }
 
@@ -64,6 +56,7 @@ object Deps {
     object coroutines {
       const val bom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:${Versions.coroutines}"
       const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
+      const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
       const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
       const val playServices = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.coroutines}"
     }
@@ -74,10 +67,6 @@ object Deps {
     const val auth = "io.ktor:ktor-auth:${Versions.ktor}"
     const val websockets = "io.ktor:ktor-websockets:${Versions.ktor}"
     const val locations = "io.ktor:ktor-locations:${Versions.ktor}"
-
-    object content {
-      const val moshi = "com.ryanharter.ktor:ktor-moshi:1.0.1"
-    }
 
     object server : Dep("io.ktor:ktor-server-core:${Versions.ktor}") {
       const val netty = "io.ktor:ktor-server-netty:${Versions.ktor}"
@@ -93,13 +82,17 @@ object Deps {
   object androidx {
     const val core = "androidx.core:core-ktx:${Versions.androidx.core}"
     const val appcompat = "androidx.appcompat:appcompat:${Versions.androidx.appcompat}"
-    const val activity = "androidx.activity:activity-ktx:${Versions.androidx.activity}"
     const val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.androidx.constraintLayout}"
     const val coordinatorLayout = "androidx.coordinatorlayout:coordinatorlayout:${Versions.androidx.coordinatorLayout}"
     const val fragment = "androidx.fragment:fragment-ktx:${Versions.androidx.fragment}"
     const val fragmentTesting = "androidx.fragment:fragment-testing:${Versions.androidx.fragment}"
     const val preference = "androidx.preference:preference-ktx:${Versions.androidx.preference}"
     const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.androidx.recyclerview}"
+
+
+    object activity : Dep("androidx.activity:activity-ktx:${Versions.androidx.activity}") {
+      const val compose = "androidx.activity:activity-compose:${Versions.androidx.activity}"
+    }
 
     object compose {
       const val animation = "androidx.compose.animation:animation:${Versions.compose}"
@@ -113,6 +106,7 @@ object Deps {
 
       object material : Dep("androidx.compose.material:material:${Versions.compose}") {
         const val icons = "androidx.compose.material:material-icons-core:${Versions.compose}"
+        const val moarIcons = "androidx.compose.material:material-icons-extended:${Versions.compose}"
       }
     }
 
@@ -129,6 +123,15 @@ object Deps {
       const val extensions = "androidx.lifecycle:lifecycle-extensions:${Versions.androidx.lifecycle}"
     }
   }
+
+  object accompanist {
+    const val coil = "com.google.accompanist:accompanist-coil:${Versions.accompanist}"
+    const val glide = "com.google.accompanist:accompanist-glide:${Versions.accompanist}"
+    const val insets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
+    const val systemUiController = "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
+  }
+
+  object coil : Dep("io.coil-kt:coil:${Versions.coil}")
 
   object dagger : Dep("com.google.dagger:dagger:${Versions.dagger}") {
     const val compiler = "com.google.dagger:dagger-compiler:${Versions.dagger}"

@@ -1,6 +1,7 @@
-package dev.efemoney.lexiko.engine
+package dev.efemoney.lexiko.engine.api
 
 interface Games {
+
   suspend fun createGame(hostId: PlayerId): Game
 }
 
