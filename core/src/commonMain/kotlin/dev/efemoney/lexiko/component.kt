@@ -1,7 +1,7 @@
 package dev.efemoney.lexiko
 
-import dev.efemoney.lexiko.engine.api.Games
-import dev.efemoney.lexiko.engine.api.Players
+import dev.efemoney.lexiko.engine.Games
+import dev.efemoney.lexiko.engine.Players
 import io.ktor.client.*
 
 /**

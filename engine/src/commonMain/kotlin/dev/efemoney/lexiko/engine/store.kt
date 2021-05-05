@@ -1,3 +1,6 @@
 package dev.efemoney.lexiko.engine
 
-interface Store
+interface Store {
+
+  suspend fun findGame()
+}

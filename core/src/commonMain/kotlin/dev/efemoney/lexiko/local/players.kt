@@ -1,8 +1,8 @@
 package dev.efemoney.lexiko.local
 
-import dev.efemoney.lexiko.engine.api.Player
-import dev.efemoney.lexiko.engine.api.PlayerId
-import dev.efemoney.lexiko.engine.api.Players
+import dev.efemoney.lexiko.engine.Player
+import dev.efemoney.lexiko.engine.PlayerId
+import dev.efemoney.lexiko.engine.Players
 import dev.efemoney.lexiko.internal.Inject
 
 internal class LocalPlayers @Inject constructor() : Players {

@@ -1,7 +1,7 @@
 package dev.efemoney.lexiko.local
 
 import dev.efemoney.lexiko.TestPlayers
-import dev.efemoney.lexiko.engine.api.PlayerId
+import dev.efemoney.lexiko.engine.PlayerId
 import dev.efemoney.lexiko.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

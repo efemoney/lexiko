@@ -20,7 +20,7 @@ class LobbyPresenter @Inject internal constructor(
 
   val uiState: StateFlow<LobbyUiState>
 
-  private var state by MutableStateFlow(LobbyUiState(::onProfileCLicked))
+  private var state by MutableStateFlow(LobbyUiState(navigator::gotoProfile))
     .also { uiState = it.asStateFlow() }
 
   init {
@@ -30,8 +30,6 @@ class LobbyPresenter @Inject internal constructor(
   private fun CoroutineScope.launchLoadGamesAndFriendsList() = launch {
 
   }
-
-  private fun onProfileCLicked() = navigator.gotoProfile()
 }
 
 data class LobbyUiState(

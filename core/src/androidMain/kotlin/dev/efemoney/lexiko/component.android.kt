@@ -1,8 +1,8 @@
 package dev.efemoney.lexiko
 
 import dagger.Component
-import dev.efemoney.lexiko.engine.api.Games
-import dev.efemoney.lexiko.engine.api.Players
+import dev.efemoney.lexiko.engine.Games
+import dev.efemoney.lexiko.engine.Players
 import dev.efemoney.lexiko.internal.CoreModule
 import io.ktor.client.*
 import okhttp3.OkHttpClient

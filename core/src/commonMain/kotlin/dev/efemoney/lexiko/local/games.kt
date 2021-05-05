@@ -1,12 +1,12 @@
 package dev.efemoney.lexiko.local
 
 import com.benasher44.uuid.uuid4
-import dev.efemoney.lexiko.engine.api.Game
-import dev.efemoney.lexiko.engine.api.GameId
-import dev.efemoney.lexiko.engine.api.Games
-import dev.efemoney.lexiko.engine.api.Player
-import dev.efemoney.lexiko.engine.api.PlayerId
-import dev.efemoney.lexiko.engine.api.Players
+import dev.efemoney.lexiko.engine.Game
+import dev.efemoney.lexiko.engine.GameId
+import dev.efemoney.lexiko.engine.Games
+import dev.efemoney.lexiko.engine.Player
+import dev.efemoney.lexiko.engine.PlayerId
+import dev.efemoney.lexiko.engine.Players
 import dev.efemoney.lexiko.internal.Inject
 
 internal class LocalGames @Inject constructor(

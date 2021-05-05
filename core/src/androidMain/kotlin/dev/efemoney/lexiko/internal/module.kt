@@ -4,8 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import dev.efemoney.lexiko.engine.api.Games
-import dev.efemoney.lexiko.engine.api.Players
+import dev.efemoney.lexiko.engine.Games
+import dev.efemoney.lexiko.engine.Players
 import dev.efemoney.lexiko.local.LocalGames
 import dev.efemoney.lexiko.local.LocalPlayers
 import io.ktor.client.*

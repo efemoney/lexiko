@@ -1,4 +1,4 @@
-package dev.efemoney.lexiko.engine.api
+package dev.efemoney.lexiko.engine
 
 import dev.efemoney.lexiko.engine.internal.Array2d
 

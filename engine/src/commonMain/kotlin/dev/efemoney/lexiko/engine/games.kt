@@ -1,4 +1,4 @@
-package dev.efemoney.lexiko.engine.api
+package dev.efemoney.lexiko.engine
 
 interface Games {
 
@@ -7,8 +7,11 @@ interface Games {
 
 interface Game {
   val id: GameId
-  val host: Player
+  val state: GameState
+  val hostId: PlayerId
   val players: List<Player>
 }
+
+/*sealed*/ interface GameState
 
 inline class GameId(val uuid: String)

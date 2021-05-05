@@ -1,16 +1,16 @@
 @file:Suppress("ClassName", "UnstableApiUsage", "unused")
 
 object Versions {
-  const val kotlin = "1.4.32"
+  const val kotlin = "1.5.0"
   const val coroutines = "1.5.0-RC"
-  const val compose = "1.0.0-beta05"
+  const val compose = "1.0.0-beta06"
   const val coil = "1.2.1"
-  const val accompanist = "0.8.1"
+  const val accompanist = "0.9.0"
   const val ktor = "1.5.4"
   const val moshi = "1.12.0"
   const val moshix = "0.10.0"
   const val okio = "3.0.0-alpha.5"
-  const val okhttp = "4.9.1"
+  const val okhttp = "5.0.0-alpha.2"
   const val retrofit = "2.9.0"
   const val dagger = "2.35.1"
   const val glide = "4.12.0"
@@ -33,7 +33,7 @@ object Versions {
 }
 
 object Deps {
-  const val uuid = "com.benasher44:uuid:0.2.4" // "com.benasher44:uuid:0.3.0"
+  const val uuid = "com.benasher44:uuid:0.3.0"
   const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
   const val jsr250 = "javax.annotation:jsr250-api:1.0"
 
@@ -127,6 +127,7 @@ object Deps {
   object accompanist {
     const val coil = "com.google.accompanist:accompanist-coil:${Versions.accompanist}"
     const val glide = "com.google.accompanist:accompanist-glide:${Versions.accompanist}"
+    const val pager = "com.google.accompanist:accompanist-pager:${Versions.accompanist}"
     const val insets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
     const val systemUiController = "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
   }
