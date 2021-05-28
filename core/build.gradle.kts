@@ -1,7 +1,8 @@
 plugins {
   id("plugin-multiplatform")
-  id("plugin-android-target")
-  id("plugin-ios-target")
+  id("plugin-android-library")
+  id("plugin-target-android")
+  id("plugin-target-ios")
   kotlin("kapt")
 }
 
@@ -35,10 +36,8 @@ dependencies {
 }
 
 dependencies {
-  commonTestImplementation(kotlin("test-common"))
-  commonTestImplementation(kotlin("test-annotations-common"))
+  commonTestImplementation(kotlin("test"))
 
-  androidTestImplementation(kotlin("test-junit"))
-  androidTestImplementation("junit:junit:4.13.2")
+  androidTestImplementation(Deps.junit)
   androidTestImplementation(Deps.kotlinx.coroutines.test)
 }

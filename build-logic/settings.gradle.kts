@@ -8,7 +8,6 @@ dependencyResolutionManagement {
   }
 }
 
-include("src")
-include("plugin-android")
-include("plugin-simple-layout")
-include("plugin-multiplatform")
+//include("plugin-android")
+//include("plugin-simple-layout")
+//include("plugin-multiplatform")

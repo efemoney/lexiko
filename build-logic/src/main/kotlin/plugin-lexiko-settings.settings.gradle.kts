@@ -1,20 +1,10 @@
 @file:Suppress("UnstableApiUsage", "FunctionName")
 
 import com.github.benmanes.gradle.versions.VersionsPlugin
-import org.gradle.api.JavaVersion
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.api.initialization.Settings
 import org.gradle.api.internal.FeaturePreviews
 import org.gradle.api.internal.FeaturePreviews.Feature.VERSION_CATALOGS
-import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.initialization.DependenciesAccessors
-import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.buildscript
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.support.serviceOf
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
@@ -22,22 +12,18 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinBasePluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
-import javax.inject.Inject
 
-class LexikoSettingsPlugin : Plugin<Settings> {
+apply<VersionCatalogFixPlugin>()
 
-  override fun apply(target: Settings) {
-    target.apply<VersionCatalogFixPlugin>()
-    target.gradle.rootProject {
-      apply<VersionsPlugin>()
+gradle.rootProject {
+  apply<VersionsPlugin>() // ben-manes
 
-      AndroidMultiplatformFix()
-      JavaConvention()
-      KotlinConvention()
-      KaptConvention()
-      AllTheBoms()
-    }
-  }
+  //AndroidMultiplatformFix()
+
+  JavaConvention()
+  KotlinConvention()
+  KaptConvention()
+  AllTheBoms()
 }
 
 class VersionCatalogFixPlugin @Inject constructor(private val featurePreviews: FeaturePreviews) : Plugin<Settings> {
@@ -51,7 +37,7 @@ class VersionCatalogFixPlugin @Inject constructor(private val featurePreviews: F
   }
 }
 
-private fun Project.AllTheBoms() = subprojects {
+fun Project.AllTheBoms() = subprojects {
 
   pluginManager.withAnyPlugin("java", "kotlin") {
     dependencies {
@@ -68,7 +54,7 @@ private fun Project.AllTheBoms() = subprojects {
   }
 }
 
-private fun Project.AndroidMultiplatformFix() = subprojects {
+fun Project.AndroidMultiplatformFix() = subprojects {
   pluginManager.withPlugin("kotlin-multiplatform") {
     pluginManager.withAnyAndroidPlugin {
       with(configurations) {
@@ -83,7 +69,7 @@ private fun Project.AndroidMultiplatformFix() = subprojects {
   }
 }
 
-private fun Project.JavaConvention() = subprojects {
+fun Project.JavaConvention() = subprojects {
   pluginManager.withAnyPlugin("java", "kotlin") {
     configure<JavaPluginExtension> {
       sourceCompatibility = JavaVersion.VERSION_11
@@ -92,7 +78,7 @@ private fun Project.JavaConvention() = subprojects {
   }
 }
 
-private fun Project.KaptConvention() = subprojects {
+fun Project.KaptConvention() = subprojects {
   pluginManager.withPlugin("kotlin-kapt") {
     configure<KaptExtension> {
       correctErrorTypes = true
@@ -106,7 +92,7 @@ private fun Project.KaptConvention() = subprojects {
   }
 }
 
-private fun Project.KotlinConvention() = subprojects {
+fun Project.KotlinConvention() = subprojects {
   // Cannot use pluginManager as we need this to be lazy and based on KotlinBasePluginWrapper type
   plugins.withType<KotlinBasePluginWrapper>().configureEach {
 
@@ -139,7 +125,7 @@ private fun Project.KotlinConvention() = subprojects {
   }
 }
 
-private fun KotlinTarget.configureFreeArgs() = compilations.configureEach {
+fun KotlinTarget.configureFreeArgs() = compilations.configureEach {
 
   val freeArgs = listOf("-progressive")
 
@@ -155,8 +141,7 @@ private fun KotlinTarget.configureFreeArgs() = compilations.configureEach {
     freeCompilerArgs = freeCompilerArgs + freeArgs
 
     if (this is KotlinJvmOptions) {
-      useIR = true
-      jvmTarget = "1.8"
+      jvmTarget = "11"
       javaParameters = true
       freeCompilerArgs = freeCompilerArgs + jvmFreeArgs
     }

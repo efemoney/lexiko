@@ -1,24 +1,24 @@
 @file:Suppress("ClassName", "UnstableApiUsage", "unused")
 
 object Versions {
-  const val kotlin = "1.5.0"
-  const val coroutines = "1.5.0-RC"
-  const val compose = "1.0.0-beta06"
+  const val kotlin = "1.5.10"
+  const val coroutines = "1.5.0"
+  const val compose = "1.0.0-beta07"
   const val coil = "1.2.1"
-  const val accompanist = "0.9.0"
+  const val accompanist = "0.10.0"
   const val ktor = "1.5.4"
   const val moshi = "1.12.0"
-  const val moshix = "0.10.0"
+  const val moshix = "0.11.1"
   const val okio = "3.0.0-alpha.5"
   const val okhttp = "5.0.0-alpha.2"
   const val retrofit = "2.9.0"
-  const val dagger = "2.35.1"
+  const val dagger = "2.36"
   const val glide = "4.12.0"
   const val material = "1.3.0"
   const val timber = "4.7.1"
 
   object androidx {
-    const val core = "1.6.0-alpha02"
+    const val core = "1.6.0-alpha03"
     const val activity = "1.3.0-alpha07"
     const val appcompat = "1.3.0-rc01"
     const val datastore = "1.0.0-alpha07"
@@ -33,6 +33,7 @@ object Versions {
 }
 
 object Deps {
+  const val junit = "junit:junit:4.13.2"
   const val uuid = "com.benasher44:uuid:0.3.0"
   const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
   const val jsr250 = "javax.annotation:jsr250-api:1.0"
@@ -47,7 +48,7 @@ object Deps {
   }
 
   object kotlinx {
-    const val datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1"
+    const val datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.2.1"
 
     object immutable : Dep("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4") {
       const val jvm = "org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4"

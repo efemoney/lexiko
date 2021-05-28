@@ -1,0 +1,1 @@
+pluginManager.apply("kotlin-multiplatform")
