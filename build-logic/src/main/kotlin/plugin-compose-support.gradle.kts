@@ -3,6 +3,6 @@
 pluginManager.withAnyAndroidPlugin {
   android {
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = Versions.compose
+    composeOptions.kotlinCompilerExtensionVersion = Versions.androidx.compose
   }
 }

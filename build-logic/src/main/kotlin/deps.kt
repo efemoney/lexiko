@@ -1,32 +1,33 @@
 @file:Suppress("ClassName", "UnstableApiUsage", "unused")
 
 object Versions {
-  const val kotlin = "1.5.10"
+  const val kotlin = "1.5.20-RC"
   const val coroutines = "1.5.0"
-  const val compose = "1.0.0-beta07"
-  const val coil = "1.2.1"
-  const val accompanist = "0.10.0"
-  const val ktor = "1.5.4"
+  const val serialization = "1.2.1"
+  const val coil = "1.2.2"
+  const val accompanist = "0.12.0"
+  const val ktor = "1.6.0"
   const val moshi = "1.12.0"
-  const val moshix = "0.11.1"
-  const val okio = "3.0.0-alpha.5"
+  const val moshix = "0.11.2"
+  const val okio = "3.0.0-alpha.6"
   const val okhttp = "5.0.0-alpha.2"
   const val retrofit = "2.9.0"
-  const val dagger = "2.36"
+  const val dagger = "2.37"
   const val glide = "4.12.0"
   const val material = "1.3.0"
   const val timber = "4.7.1"
 
   object androidx {
-    const val core = "1.6.0-alpha03"
-    const val activity = "1.3.0-alpha07"
-    const val appcompat = "1.3.0-rc01"
+    const val core = "1.6.0-rc01"
+    const val compose = "1.0.0-beta09"
+    const val activity = "1.3.0-beta02"
+    const val appcompat = "1.4.0-alpha02"
     const val datastore = "1.0.0-alpha07"
     const val constraintLayout = "2.0.4"
     const val coordinatorLayout = "1.1.0"
-    const val fragment = "1.3.3"
+    const val fragment = "1.4.0-alpha03"
     const val lifecycle = "2.3.0"
-    const val navigation = "2.3.5"
+    const val navigation = "2.4.0-alpha03"
     const val preference = "1.1.1"
     const val recyclerview = "1.2.0"
   }
@@ -60,6 +61,11 @@ object Deps {
       const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
       const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
       const val playServices = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.coroutines}"
+    }
+
+    object serialization {
+      const val bom = "org.jetbrains.kotlinx:kotlinx-serialization-bom:${Versions.serialization}"
+      const val core = "org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.serialization}"
     }
   }
 
@@ -96,24 +102,24 @@ object Deps {
     }
 
     object compose {
-      const val animation = "androidx.compose.animation:animation:${Versions.compose}"
-      const val compiler = "androidx.compose.compiler:compiler:${Versions.compose}"
-      const val foundation = "androidx.compose.foundation:foundation:${Versions.compose}"
-      const val runtime = "androidx.compose.runtime:runtime:${Versions.compose}"
+      const val animation = "androidx.compose.animation:animation:${Versions.androidx.compose}"
+      const val compiler = "androidx.compose.compiler:compiler:${Versions.androidx.compose}"
+      const val foundation = "androidx.compose.foundation:foundation:${Versions.androidx.compose}"
+      const val runtime = "androidx.compose.runtime:runtime:${Versions.androidx.compose}"
 
-      object ui : Dep("androidx.compose.ui:ui:${Versions.compose}") {
-        const val tooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
+      object ui : Dep("androidx.compose.ui:ui:${Versions.androidx.compose}") {
+        const val tooling = "androidx.compose.ui:ui-tooling:${Versions.androidx.compose}"
       }
 
-      object material : Dep("androidx.compose.material:material:${Versions.compose}") {
-        const val icons = "androidx.compose.material:material-icons-core:${Versions.compose}"
-        const val moarIcons = "androidx.compose.material:material-icons-extended:${Versions.compose}"
+      object material : Dep("androidx.compose.material:material:${Versions.androidx.compose}") {
+        const val icons = "androidx.compose.material:material-icons-core:${Versions.androidx.compose}"
+        const val moarIcons = "androidx.compose.material:material-icons-extended:${Versions.androidx.compose}"
       }
     }
 
     object navigation {
       const val ui = "androidx.navigation:navigation-ui-ktx:${Versions.androidx.navigation}"
-      const val compose = "androidx.navigation:navigation-compose:1.0.0-alpha10"
+      const val compose = "androidx.navigation:navigation-compose:${Versions.androidx.navigation}"
       const val runtime = "androidx.navigation:navigation-runtime-ktx:${Versions.androidx.navigation}"
       const val fragment = "androidx.navigation:navigation-fragment-ktx:${Versions.androidx.navigation}"
     }
@@ -130,6 +136,7 @@ object Deps {
     const val glide = "com.google.accompanist:accompanist-glide:${Versions.accompanist}"
     const val pager = "com.google.accompanist:accompanist-pager:${Versions.accompanist}"
     const val insets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
+    const val insetsUi = "com.google.accompanist:accompanist-insets-ui:${Versions.accompanist}"
     const val systemUiController = "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
   }
 

@@ -8,8 +8,8 @@ const val NO_ID: Int = -1
 actual typealias Direction = NavDirections
 
 sealed class CustomDirection : Direction {
-  override fun getActionId() = NO_ID
-  override fun getArguments() = bundleOf()
+  override val actionId = NO_ID
+  override val arguments = bundleOf()
 }
 
 data class PopBackStack(val popUpTo: Int = NO_ID, val popUpToInclusive: Boolean = false) : CustomDirection()

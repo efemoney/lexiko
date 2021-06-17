@@ -4,16 +4,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 
 class Coordinator(
-  private val hostId: PlayerId,
   private val games: Games,
   private val players: Players,
-  private val store: Store,
+  private val coordinatorScope: CoroutineScope = TODO(),
 ) {
-  private val scope: CoroutineScope = TODO()
 
-  suspend fun createNewGame(hostId: PlayerId, andInvite: List<PlayerId>): GameId = coroutineScope {
-
-
+  suspend fun createNewGame(hostId: PlayerId, invitees: List<PlayerId> = emptyList()): GameId = coroutineScope {
     TODO()
   }
 }

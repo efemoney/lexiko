@@ -1,6 +1,6 @@
 plugins {
-  id("plugin-multiplatform")
   id("plugin-android-library")
+  id("plugin-multiplatform")
   id("plugin-target-android")
   id("plugin-target-ios")
 }

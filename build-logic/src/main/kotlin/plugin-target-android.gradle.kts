@@ -1,9 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-
-pluginManager.withPlugin("kotlin-multiplatform") {
-  the<KotlinMultiplatformExtension>().android()
+pluginManager.withMultiplatformPlugin {
+  kotlin.android()
 
   pluginManager.withAnyAndroidPlugin {
     android

@@ -30,6 +30,7 @@ dependencies {
   implementation(Deps.coil)
   implementation(Deps.accompanist.coil)
   implementation(Deps.accompanist.insets)
+  implementation(Deps.accompanist.insetsUi)
   implementation(Deps.accompanist.systemUiController)
 
   implementation(Deps.dagger)

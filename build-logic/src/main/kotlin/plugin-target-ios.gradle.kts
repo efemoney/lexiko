@@ -1,9 +1,7 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-
-pluginManager.withPlugin("kotlin-multiplatform") {
+pluginManager.withMultiplatformPlugin {
   val projectName = project.name
 
-  the<KotlinMultiplatformExtension>().ios {
+  kotlin.ios {
     binaries.framework {
       baseName = projectName
     }

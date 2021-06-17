@@ -1,17 +1,17 @@
 @file:Suppress("UnstableApiUsage", "NOTHING_TO_INLINE")
 
-import com.android.build.api.dsl.ApplicationBuildFeatures
-import com.android.build.api.dsl.BuildFeatures
-import com.android.build.api.dsl.DynamicFeatureBuildFeatures
-import com.android.build.api.dsl.LibraryBuildFeatures
+import com.android.build.api.dsl.*
 
 pluginManager.withAnyAndroidPlugin {
   android {
-    compileSdkVersion(30)
+    compileSdk = 30
 
     defaultConfig {
       minSdk = 21
-      targetSdk = 30
+      when (this) {
+        is ApplicationDefaultConfig -> targetSdk = 30
+        is LibraryDefaultConfig -> targetSdk = 30
+      }
       vectorDrawables.useSupportLibrary = true
     }
 

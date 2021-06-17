@@ -1,23 +1,18 @@
 @file:Suppress("UnstableApiUsage", "NOTHING_TO_INLINE")
 
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+pluginManager.withMultiplatformPlugin {
 
-pluginManager.withPlugin("kotlin-multiplatform") {
-
-  val multiplatformExtension = the<KotlinMultiplatformExtension>()
-
-  multiplatformExtension.sourceSets
+  kotlin.sourceSets
     .matching { listOf(/*"common",*/ "ios", "jvm").any(it.name::startsWith) }
     .configureEach {
       kotlin.setSrcDirs(listOf(simpleName(name, "src")))
       resources.setSrcDirs(listOf(simpleName(name, "resources")))
     }
 
-  multiplatformExtension.sourceSets
+  kotlin.sourceSets
     .matching { it.name.startsWith("android") }
     .configureEach {
-      val other = name.removePrefix("android")
-        .decapitalize()
+      val other = name.removePrefix("android").decapitalize()
         .let { if (it == "main") "" else "-$it" }
 
       val actualName = "android$other"
@@ -28,7 +23,7 @@ pluginManager.withPlugin("kotlin-multiplatform") {
 }
 
 pluginManager.withAnyPlugin("java", "java-library") {
-  the<SourceSetContainer>().configureEach {
+  the<JavaPluginExtension>().sourceSets.configureEach {
     java.setSrcDirs(listOf(simpleName(name, "src")))
     resources.setSrcDirs(listOf(simpleName(name, "resources")))
   }

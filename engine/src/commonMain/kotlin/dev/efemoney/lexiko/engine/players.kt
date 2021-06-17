@@ -1,5 +1,7 @@
 package dev.efemoney.lexiko.engine
 
+import kotlin.jvm.JvmInline
+
 interface Players {
 
   suspend fun findById(playerId: PlayerId): Player?
@@ -11,4 +13,5 @@ interface Player {
   val id: PlayerId
 }
 
-inline class PlayerId(val platformUid: String)
+@JvmInline
+value class PlayerId(val platformUid: String)

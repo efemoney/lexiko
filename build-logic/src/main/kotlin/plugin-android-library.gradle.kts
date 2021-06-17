@@ -1,6 +1,6 @@
 plugins {
-  com.android.library
   id("convention-android")
+  com.android.library
 }
 
 androidComponents {

@@ -1,16 +1,13 @@
 package dev.efemoney.lexiko.lobby
 
-import dev.efemoney.lexiko.internal.Dispatchers
-import dev.efemoney.lexiko.internal.Inject
-import dev.efemoney.lexiko.internal.RetainedScope
-import dev.efemoney.lexiko.internal.getValue
-import dev.efemoney.lexiko.internal.setValue
+import dev.efemoney.lexiko.internal.*
 import dev.efemoney.lexiko.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.jvm.JvmInline
 
 class LobbyPresenter @Inject internal constructor(
   private val dispatchers: Dispatchers,
@@ -61,6 +58,8 @@ data class Friend(
   val onClick: () -> Unit,
 ) : Player(), GameOrFriend
 
-inline class Name(val value: String)
+@JvmInline
+value class Name(val value: String)
 
-inline class Avatar(val model: Any?)
+@JvmInline
+value class Avatar(val model: Any?)

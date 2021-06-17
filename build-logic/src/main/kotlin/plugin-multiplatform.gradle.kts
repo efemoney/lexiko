@@ -1,1 +1,1 @@
-pluginManager.apply("kotlin-multiplatform")
+pluginManager.apply("org.jetbrains.kotlin.multiplatform")

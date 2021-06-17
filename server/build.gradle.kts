@@ -4,14 +4,6 @@ plugins {
   kotlin
   `kotlin-kapt`
   `kotlin-noarg`
-  com.google.devtools.ksp
-}
-
-sourceSets.configureEach {
-  java.srcDirs(
-    "build/generated/ksp/$name",
-    "build/generated/source/kapt/$name"
-  )
 }
 
 application.mainClass.set("io.ktor.server.netty.EngineMain")
@@ -28,7 +20,7 @@ dependencies {
 
   implementation(Deps.moshi)
   implementation(Deps.moshi.lazyAdapters)
-  ksp(Deps.moshix.ksp)
+  kapt(Deps.moshi.codegen)
 
   implementation(Deps.ktor.server)
   implementation(Deps.ktor.server.netty)

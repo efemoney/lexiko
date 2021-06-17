@@ -7,7 +7,3 @@ dependencyResolutionManagement {
     gradlePluginPortal()
   }
 }
-
-//include("plugin-android")
-//include("plugin-simple-layout")
-//include("plugin-multiplatform")
