@@ -1,31 +1,42 @@
-@file:Suppress("UnstableApiUsage", "NOTHING_TO_INLINE")
+@file:Suppress("UnstableApiUsage", "NOTHING_TO_INLINE", "UNREACHABLE_CODE")
 
-pluginManager.withMultiplatformPlugin {
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
 
-  kotlin.sourceSets
-    .matching { listOf(/*"common",*/ "ios", "jvm").any(it.name::startsWith) }
-    .configureEach {
-      kotlin.setSrcDirs(listOf(simpleName(name, "src")))
-      resources.setSrcDirs(listOf(simpleName(name, "resources")))
-    }
-
-  kotlin.sourceSets
-    .matching { it.name.startsWith("android") }
-    .configureEach {
-      val other = name.removePrefix("android").decapitalize()
-        .let { if (it == "main") "" else "-$it" }
-
-      val actualName = "android$other"
-
-      kotlin.setSrcDirs(listOf(simpleName(actualName, "src")))
-      resources.setSrcDirs(listOf(simpleName(actualName, "resources")))
-    }
-}
-
-pluginManager.withAnyPlugin("java", "java-library") {
+pluginManager.withPlugin("java") {
   the<JavaPluginExtension>().sourceSets.configureEach {
     java.setSrcDirs(listOf(simpleName(name, "src")))
     resources.setSrcDirs(listOf(simpleName(name, "resources")))
+  }
+}
+
+pluginManager.withAnyKotlinPlugin {
+  when (kotlin) {
+    is KotlinSingleTargetExtension -> kotlin.sourceSets.configureEach {
+      kotlin.setSrcDirs(listOf(simpleName(name, "src")))
+      resources.setSrcDirs(listOf(simpleName(name, "resources")))
+    }
+    is KotlinMultiplatformExtension -> {
+      // Todo:
+      // kotlin.sourceSets
+      //   .matching { listOf(/*"common",*/ "ios", "jvm").any(it.name::startsWith) }
+      //   .configureEach {
+      //     kotlin.setSrcDirs(listOf(simpleName(name, "src")))
+      //     resources.setSrcDirs(listOf(simpleName(name, "resources")))
+      //   }
+
+      // kotlin.sourceSets
+      //   .matching { it.name.startsWith("android") }
+      //   .configureEach {
+      //     val other = name.removePrefix("android").decapitalize()
+      //       .let { if (it == "main") "" else "-$it" }
+
+      //     val actualName = "android$other"
+
+      //     kotlin.setSrcDirs(listOf(simpleName(actualName, "src")))
+      //     resources.setSrcDirs(listOf(simpleName(actualName, "resources")))
+      //   }
+    }
   }
 }
 

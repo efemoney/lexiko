@@ -1,7 +1,7 @@
 @file:Suppress("ClassName", "UnstableApiUsage", "unused")
 
 object Versions {
-  const val kotlin = "1.5.20-RC"
+  const val kotlin = "1.5.20"
   const val coroutines = "1.5.0"
   const val serialization = "1.2.1"
   const val coil = "1.2.2"

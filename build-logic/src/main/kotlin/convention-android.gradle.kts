@@ -5,6 +5,7 @@ import com.android.build.api.dsl.*
 pluginManager.withAnyAndroidPlugin {
   android {
     compileSdk = 30
+    buildToolsVersion = "30.0.3"
 
     defaultConfig {
       minSdk = 21

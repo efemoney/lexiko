@@ -30,7 +30,7 @@ inline fun PluginManager.withAnyKotlinPlugin(action: Action<AppliedKotlinPlugin<
 }
 
 inline fun PluginManager.withMultiplatformPlugin(action: Action<AppliedKotlinPlugin<KotlinMultiplatformExtension>>) {
-  withAnyPlugin("org.jetbrains.kotlin.multiplatform") {
+  withPlugin("org.jetbrains.kotlin.multiplatform") {
     action.execute(AppliedKotlinPlugin(this))
   }
 }
