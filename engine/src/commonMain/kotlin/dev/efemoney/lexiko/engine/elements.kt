@@ -6,21 +6,17 @@ interface Board : Array2d<TileSlot>
 
 interface TileSlot {
   val position: Position
-  val multiplier: TileMultiplier
+  val multiplier: Multiplier
   val tile: Tile?
 }
+
 
 interface Position {
   val row: Int
   val col: Int
 }
 
-interface Tile {
-  val letter: TileLetter
-  val value: TileValue
-}
-
-enum class TileMultiplier {
+enum class Multiplier {
   None,
   DoubleWord,
   DoubleLetter,
@@ -28,11 +24,22 @@ enum class TileMultiplier {
   TripleLetter,
 }
 
+interface Tile {
+  val letter: TileLetter
+  val point: TilePoint
+}
+
+interface TileLetter {
+  val value: Char
+}
+
+interface TilePoint {
+  val value: Int
+}
+
 interface TileBag {
-  val remainingTileCount: Int
+  val remainingTilesCount: Int
   fun pickRandomTile(): Tile?
 }
 
-inline class TileLetter(val value: Char)
-
-inline class TileValue(val value: Int)
+inline fun TileBag.isEmpty() = remainingTilesCount == 0

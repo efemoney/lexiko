@@ -1,10 +1,14 @@
 plugins {
-  id("plugin-android-library")
-  id("plugin-multiplatform")
-  id("plugin-target-android")
-  id("plugin-target-ios")
+  plugin("android-library")
+
+  kotlin("multiplatform")
+  plugin("target-android")
+  plugin("target-ios")
+
   kotlin("kapt")
 }
+
+android.namespace = "dev.efemoney.lexiko"
 
 dependencies {
   commonMainImplementation(project(":engine"))

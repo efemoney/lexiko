@@ -2,11 +2,6 @@ package dev.efemoney.lexiko.engine
 
 import kotlin.jvm.JvmInline
 
-interface Games {
-
-  suspend fun createGame(hostId: PlayerId): Game
-}
-
 interface Game {
   val id: GameId
   val state: GameState
@@ -15,13 +10,9 @@ interface Game {
 }
 
 sealed interface GameState {
-
   interface Initialized : GameState
-
   interface WaitingForPlayers : GameState
-
   interface Started : GameState
-
   interface WaitingForTurn : GameState {
     val forPlayer: PlayerId
   }

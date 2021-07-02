@@ -61,6 +61,7 @@ internal fun Project.KotlinConvention() {
         "kotlin.time.ExperimentalTime",
         "kotlinx.coroutines.FlowPreview",
         "kotlinx.coroutines.ExperimentalCoroutinesApi",
+        "dev.efemoney.lexiko.engine.internal.InternalEngineApi",
       )
 
       val languageFeatures = listOf(

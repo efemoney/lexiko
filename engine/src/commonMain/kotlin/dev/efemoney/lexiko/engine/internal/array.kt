@@ -2,6 +2,7 @@
 
 package dev.efemoney.lexiko.engine.internal
 
+@InternalEngineApi
 interface Array2d<T> {
   val rows: Int
   val cols: Int

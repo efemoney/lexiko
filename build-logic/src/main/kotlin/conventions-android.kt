@@ -1,35 +1,42 @@
-@file:Suppress("UnstableApiUsage", "NOTHING_TO_INLINE")
+@file:Suppress("UnstableApiUsage", "NOTHING_TO_INLINE", "FunctionName")
 
 import com.android.build.api.dsl.*
+import org.gradle.api.JavaVersion
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
 
-pluginManager.withAnyAndroidPlugin {
-  android {
-    compileSdk = 30
-    buildToolsVersion = "30.0.3"
+internal fun Project.AndroidConvention() {
 
-    defaultConfig {
-      minSdk = 21
-      when (this) {
-        is ApplicationDefaultConfig -> targetSdk = 30
-        is LibraryDefaultConfig -> targetSdk = 30
+  pluginManager.withAnyAndroidPlugin {
+    android {
+      compileSdk = 30
+      buildToolsVersion = "30.0.3"
+
+      defaultConfig {
+        minSdk = 21
+        when (this) {
+          is ApplicationDefaultConfig -> targetSdk = 30
+          is LibraryDefaultConfig -> targetSdk = 30
+        }
+        vectorDrawables.useSupportLibrary = true
       }
-      vectorDrawables.useSupportLibrary = true
+
+      compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
+
+        dependencies {
+          "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:1.1.5")
+        }
+      }
+
+      buildFeatures.disableAll()
     }
-
-    compileOptions {
-      sourceCompatibility = JavaVersion.VERSION_11
-      targetCompatibility = JavaVersion.VERSION_11
-
-      // https://developer.android.com/studio/releases/gradle-plugin#j8-library-desugaring
-      isCoreLibraryDesugaringEnabled = true
-      dependencies { "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:1.1.5") }
-    }
-
-    buildFeatures.disableAll()
   }
 }
 
-inline fun BuildFeatures.disableAll() {
+private inline fun BuildFeatures.disableAll() {
   // Some other plugin might have set these flags so only change them if they have default value of 'null'
 
   if (aidl == null) aidl = false
