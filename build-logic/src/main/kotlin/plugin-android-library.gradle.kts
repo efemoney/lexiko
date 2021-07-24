@@ -2,9 +2,7 @@ plugins {
   com.android.library
 }
 
-androidComponents {
-  // beforeVariants(
-  //   selector = selector().withBuildType("release"),
-  //   callback = { it.enabled = false }
-  // )
-}
+// Todo: Mpp does not like disabled build types
+// android.variantFilter {
+//   ignore = buildType.name == "debug"
+// }

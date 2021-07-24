@@ -2,12 +2,12 @@ package dev.efemoney.lexiko.app
 
 import android.app.Application
 import dev.efemoney.lexiko.DaggerCoreComponent
-import dev.efemoney.lexiko.app.internal.AppComponent
 import dev.efemoney.lexiko.app.internal.DaggerAppComponent
+import dev.efemoney.lexiko.app.internal.SingletonComponent
 
 class LexikoApplication : Application() {
 
-  internal lateinit var component: AppComponent
+  internal lateinit var component: SingletonComponent
 
   override fun onCreate() {
     super.onCreate()

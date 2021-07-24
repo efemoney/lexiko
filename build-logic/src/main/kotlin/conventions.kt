@@ -12,20 +12,25 @@ import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 
 internal fun Project.AllTheBoms() {
+  configurations
+    .matching { it.name == "implementation" }
+    .configureEach {
+      val implementation = this
 
-  pluginManager.withAnyKotlinPlugin {
-    dependencies {
-      "implementation"(platform(Deps.ktor.bom))
-      "implementation"(platform(Deps.kotlin.bom))
-      "implementation"(platform(Deps.kotlinx.coroutines.bom))
-    }
-  }
+      pluginManager.withAnyKotlinPlugin {
+        dependencies {
+          implementation(platform(Deps.ktor.bom))
+          implementation(platform(Deps.kotlin.bom))
+          implementation(platform(Deps.kotlinx.coroutines.bom))
+        }
+      }
 
-  pluginManager.withAnyAndroidPlugin {
-    dependencies {
-      "implementation"(platform(Deps.okHttp.bom))
+      pluginManager.withAnyAndroidPlugin {
+        dependencies {
+          implementation(platform(Deps.okHttp.bom))
+        }
+      }
     }
-  }
 }
 
 internal fun Project.JavaConvention() {
@@ -58,9 +63,11 @@ internal fun Project.KotlinConvention() {
         "kotlin.RequiresOptIn",
         "kotlin.ExperimentalStdlibApi",
         "kotlin.ExperimentalMultiplatform",
+        "kotlin.experimental.ExperimentalTypeInference",
         "kotlin.time.ExperimentalTime",
         "kotlinx.coroutines.FlowPreview",
         "kotlinx.coroutines.ExperimentalCoroutinesApi",
+        "coil.annotation.ExperimentalCoilApi",
         "dev.efemoney.lexiko.engine.internal.InternalEngineApi",
       )
 

@@ -24,14 +24,14 @@ internal fun Project.AndroidConvention() {
       compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true
 
-        dependencies {
-          "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:1.1.5")
-        }
+        isCoreLibraryDesugaringEnabled = true
+        dependencies { "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:1.1.5") }
       }
 
       buildFeatures.disableAll()
+
+      testCoverage.jacocoVersion = "0.8.7"
     }
   }
 }

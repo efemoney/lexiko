@@ -13,7 +13,7 @@ import dev.efemoney.lexiko.navigation.Navigator
 import okhttp3.OkHttpClient
 
 @Module
-internal interface AppModule
+internal interface SingletonModule
 
 @Module
 internal interface RetainedModule {
@@ -34,7 +34,9 @@ internal interface RetainedModule {
     fun imageLoader(context: Context, okHttp: OkHttpClient) =
       ImageLoader.Builder(context)
         .callFactory(okHttp)
-        .componentRegistry {}
+        .componentRegistry {
+
+        }
         .build()
   }
 }

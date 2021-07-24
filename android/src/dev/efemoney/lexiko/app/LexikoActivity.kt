@@ -8,10 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.view.WindowCompat.getInsetsController
 import androidx.core.view.WindowCompat.setDecorFitsSystemWindows
-import com.google.accompanist.coil.LocalImageLoader
 import dev.efemoney.lexiko.app.internal.retainedComponent
 import dev.efemoney.lexiko.app.ui.LexikoApp
 import dev.efemoney.lexiko.app.ui.LexikoTheme
+import coil.compose.LocalImageLoader as CoilLocalImageLoader
+import com.google.accompanist.coil.LocalImageLoader as AccompanistLocalImageLoader
 
 class LexikoActivity : AppCompatActivity() {
 
@@ -25,8 +26,11 @@ class LexikoActivity : AppCompatActivity() {
     }
 
     setContent {
+      val imageLoader = retainedComponent().imageLoader
+
       CompositionLocalProvider(
-        LocalImageLoader provides retainedComponent().imageLoader,
+        CoilLocalImageLoader provides imageLoader,
+        AccompanistLocalImageLoader provides imageLoader,
         content = {
           LexikoTheme { LexikoApp() }
         }

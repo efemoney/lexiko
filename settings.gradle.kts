@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
   includeBuild("build-logic")
 
@@ -14,8 +16,9 @@ plugins {
   id("plugin-lexiko-settings")
 }
 
-include("core")
+include("statemachine")
 include("engine")
+include("core")
 include("android")
 include("ios")
 include("server")

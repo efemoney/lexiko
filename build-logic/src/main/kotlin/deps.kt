@@ -1,33 +1,33 @@
 @file:Suppress("ClassName", "UnstableApiUsage", "unused")
 
 object Versions {
-  const val kotlin = "1.5.20"
-  const val coroutines = "1.5.0"
-  const val serialization = "1.2.1"
-  const val coil = "1.2.2"
-  const val accompanist = "0.13.0"
+  const val kotlin = "1.5.30-M1"
+  const val coroutines = "1.5.1"
+  const val serialization = "1.2.2"
+  const val coil = "1.3.0"
+  const val accompanist = "0.14.0"
   const val ktor = "1.6.1"
   const val moshi = "1.12.0"
   const val moshix = "0.11.2"
-  const val okio = "3.0.0-alpha.6"
+  const val okio = "3.0.0-alpha.8"
   const val okhttp = "5.0.0-alpha.2"
   const val retrofit = "2.9.0"
-  const val dagger = "2.37"
+  const val dagger = "2.38"
   const val glide = "4.12.0"
   const val material = "1.3.0"
   const val timber = "4.7.1"
 
   object androidx {
     const val core = "1.7.0-alpha01"
-    const val compose = "1.0.0-rc01"
-    const val activity = "1.3.0-rc01"
+    const val compose = "1.0.0-rc02"
+    const val activity = "1.3.0-rc02"
     const val appcompat = "1.4.0-alpha03"
     const val datastore = "1.0.0-alpha07"
     const val constraintLayout = "2.0.4"
     const val coordinatorLayout = "1.1.0"
-    const val fragment = "1.4.0-alpha04"
+    const val fragment = "1.4.0-alpha05"
     const val lifecycle = "2.3.0"
-    const val navigation = "2.4.0-alpha04"
+    const val navigation = "2.4.0-alpha05"
     const val preference = "1.1.1"
     const val recyclerview = "1.2.0"
   }
@@ -45,6 +45,15 @@ object Deps {
     object stdlib : Dep("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}") {
       const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:${Versions.kotlin}"
       const val jdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
+    }
+
+    object test : Dep("org.jetbrains.kotlin:kotlin-test:${Versions.kotlin}") {
+      const val common = "org.jetbrains.kotlin:kotlin-test-common:${Versions.kotlin}"
+      const val annotations = "org.jetbrains.kotlin:kotlin-test-annotations-common:${Versions.kotlin}"
+      const val junit = "org.jetbrains.kotlin:kotlin-test-junit:${Versions.kotlin}"
+      const val junit5 = "org.jetbrains.kotlin:kotlin-test-junit5:${Versions.kotlin}"
+      const val testng = "org.jetbrains.kotlin:kotlin-test-testng:${Versions.kotlin}"
+      const val js = "org.jetbrains.kotlin:kotlin-test-js:${Versions.kotlin}"
     }
   }
 
@@ -140,7 +149,9 @@ object Deps {
     const val systemUiController = "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
   }
 
-  object coil : Dep("io.coil-kt:coil:${Versions.coil}")
+  object coil : Dep("io.coil-kt:coil:${Versions.coil}") {
+    const val compose = "io.coil-kt:coil-compose:${Versions.coil}"
+  }
 
   object dagger : Dep("com.google.dagger:dagger:${Versions.dagger}") {
     const val compiler = "com.google.dagger:dagger-compiler:${Versions.dagger}"

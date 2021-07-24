@@ -1,9 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
 pluginManager.withMultiplatformPlugin {
-  kotlin.android()
-
   pluginManager.withAnyAndroidPlugin {
+    kotlin.android()
     android
       .sourceSets["main"]
       .manifest

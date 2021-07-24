@@ -1,7 +1,7 @@
 plugins {
-  com.android.application
-  id("plugin-simple-layout")
-  id("plugin-compose-support")
+  plugin("android-application")
+  plugin("simple-layout")
+  plugin("compose-support")
   kotlin("android")
   kotlin("kapt")
 }
@@ -11,7 +11,7 @@ dependencies {
   implementation(Deps.kotlinx.immutable.jvm)
   implementation(Deps.kotlinx.coroutines.android)
 
-  implementation(project(":core"))
+  implementation(projects.core)
 
   implementation(Deps.androidx.core)
   implementation(Deps.androidx.activity)
@@ -28,6 +28,7 @@ dependencies {
   implementation(Deps.androidx.compose.material.moarIcons)
 
   implementation(Deps.coil)
+  implementation(Deps.coil.compose)
   implementation(Deps.accompanist.coil)
   implementation(Deps.accompanist.insets)
   implementation(Deps.accompanist.insetsUi)

@@ -16,26 +16,14 @@ pluginManager.withAnyKotlinPlugin {
       kotlin.setSrcDirs(listOf(simpleName(name, "src")))
       resources.setSrcDirs(listOf(simpleName(name, "resources")))
     }
-    is KotlinMultiplatformExtension -> {
-      // Todo:
-      // kotlin.sourceSets
-      //   .matching { listOf(/*"common",*/ "ios", "jvm").any(it.name::startsWith) }
-      //   .configureEach {
-      //     kotlin.setSrcDirs(listOf(simpleName(name, "src")))
-      //     resources.setSrcDirs(listOf(simpleName(name, "resources")))
-      //   }
+    is KotlinMultiplatformExtension -> kotlin.sourceSets.configureEach {
+      if (name.startsWith("android")) return@configureEach // skip android sourcesets for now
 
-      // kotlin.sourceSets
-      //   .matching { it.name.startsWith("android") }
-      //   .configureEach {
-      //     val other = name.removePrefix("android").decapitalize()
-      //       .let { if (it == "main") "" else "-$it" }
-
-      //     val actualName = "android$other"
-
-      //     kotlin.setSrcDirs(listOf(simpleName(actualName, "src")))
-      //     resources.setSrcDirs(listOf(simpleName(actualName, "resources")))
-      //   }
+      val suffixIndex = name.indexOfLast(Char::isUpperCase)
+      val suffix = name.substring(suffixIndex).lowercase().takeIf { it != "main" }
+      val targetName = name.substring(0, suffixIndex)
+      kotlin.setSrcDirs(listOf("$targetName/${suffix ?: "src"}"))
+      resources.setSrcDirs(listOf("$targetName/${suffix?.let { "$it-resources " } ?: "resources"}"))
     }
   }
 }

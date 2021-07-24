@@ -29,6 +29,7 @@
             <option value="$PROJECT_DIR$/engine" />
             <option value="$PROJECT_DIR$/ios" />
             <option value="$PROJECT_DIR$/server" />
+            <option value="$PROJECT_DIR$/statemachine" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

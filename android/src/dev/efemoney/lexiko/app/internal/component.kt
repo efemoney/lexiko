@@ -24,10 +24,10 @@ internal annotation class Retained
 
 @Singleton
 @Component(
-  modules = [AppModule::class],
+  modules = [SingletonModule::class],
   dependencies = [CoreComponent::class]
 )
-internal interface AppComponent {
+internal interface SingletonComponent {
 
   val retainedComponentFactory: RetainedComponent.Factory
 
@@ -37,7 +37,7 @@ internal interface AppComponent {
     fun create(
       @BindsInstance context: Context,
       core: CoreComponent
-    ): AppComponent
+    ): SingletonComponent
   }
 }
 

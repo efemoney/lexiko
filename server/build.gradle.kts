@@ -1,5 +1,5 @@
 plugins {
-  id("plugin-simple-layout")
+  plugin("simple-layout")
   application
   kotlin
   `kotlin-kapt`

@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import dev.efemoney.lexiko.app.R
 import dev.efemoney.lexiko.app.internal.retainedComponent
 import dev.efemoney.lexiko.app.ui.LexikoTheme
@@ -161,11 +161,9 @@ private fun SpectatorCount(spectatorCount: Int) {
 @Composable
 private fun PlayerAvatar(avatar: Avatar, modifier: Modifier = Modifier) {
   Image(
-    painter = rememberCoilPainter(
-      request = avatar,
-      previewPlaceholder = R.drawable.avatar_placeholder,
-      shouldRefetchOnSizeChange = { _, _ -> false },
-    ),
+    painter = rememberImagePainter(avatar) {
+      placeholder(R.drawable.avatar_placeholder)
+    },
     contentDescription = null,
     modifier = modifier
       .border(2.dp, color = MaterialTheme.colors.surface, CircleShape)
