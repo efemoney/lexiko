@@ -1,5 +1,4 @@
 plugins {
-  plugin("simple-layout")
   kotlin("multiplatform")
   plugin("target-android")
   plugin("target-ios")
@@ -20,8 +19,4 @@ dependencies {
 
   jvmTestImplementation(Deps.junit)
   jvmTestImplementation(Deps.kotlinx.coroutines.test)
-}
-
-tasks.jvmTest {
-  testLogging.showStandardStreams = true
 }

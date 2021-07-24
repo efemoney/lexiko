@@ -1,6 +1,5 @@
 plugins {
   kotlin("multiplatform")
-  plugin("simple-layout")
   plugin("target-android")
   plugin("target-ios")
   plugin("android-library")

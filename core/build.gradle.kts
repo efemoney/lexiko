@@ -4,7 +4,6 @@ plugins {
   plugin("target-ios")
   plugin("android-library")
   kotlin("kapt")
-  plugin("simple-layout")
 }
 
 android.namespace = "dev.efemoney.lexiko"
