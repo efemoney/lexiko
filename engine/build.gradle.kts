@@ -10,7 +10,8 @@ android.namespace = "dev.efemoney.lexiko.engine"
 dependencies {
   commonMainImplementation(Deps.kotlin.stdlib.common)
   commonMainImplementation(Deps.kotlinx.coroutines.core)
-  commonMainImplementation(projects.statemachine)
+
+  androidMainImplementation(projects.statemachine)
 }
 
 dependencies {

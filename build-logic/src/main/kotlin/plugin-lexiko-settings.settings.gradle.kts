@@ -18,6 +18,7 @@ gradle.rootProject {
 gradle.beforeProject {
   AllTheBoms()
   JavaConvention()
+  TestsConvention()
   KotlinConvention()
   KaptConvention()
   AndroidConvention()

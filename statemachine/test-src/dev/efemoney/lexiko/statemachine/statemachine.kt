@@ -1,11 +1,16 @@
+@file:Suppress("NOTHING_TO_INLINE", "DEPRECATION")
+
 package dev.efemoney.lexiko.statemachine
 
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration
+import kotlin.time.seconds
 
 class StateMachineTest {
 
@@ -29,14 +34,15 @@ class StateMachineTest {
     }
 
     assertEquals(Ice, stateMachine.state)
+    assertFalse { stateMachine.process(Vaporize) } // not accepted
     assertTrue { stateMachine.process(Melt) }
     assertEquals(Ice, stateMachine.state) // should be ice because we are still melting
 
-    advanceTimeBy(30.seconds.inWholeMilliseconds) // after melting is complete
+    advanceTimeBy(30.seconds) // after melting is complete
     assertEquals(Water, stateMachine.state) // we should be completely melted
 
     assertTrue { stateMachine.process(Vaporize) }
-    advanceTimeBy(60.seconds.inWholeMilliseconds)
+    advanceTimeBy(60.seconds)
     assertEquals(Steam, stateMachine.state)
   }
 }
@@ -89,9 +95,10 @@ object Vaporize : Mattermorphosis {
   }
 }
 
-private inline val Int.seconds get() = Duration.seconds(this)
-
+@Dsl
 private inline fun <reified T : Mattermorphosis> StateTransitionBuilder<out StateOfMatter, Mattermorphosis>.accept() =
   on<T> {
     it.morph(state)
   }
+
+private inline fun DelayController.advanceTimeBy(duration: Duration) = advanceTimeBy(duration.inWholeMilliseconds)

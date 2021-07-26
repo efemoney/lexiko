@@ -1,22 +1,16 @@
 plugins {
-  kotlin("multiplatform")
-  plugin("target-android")
-  plugin("target-ios")
-  plugin("target-jvm")
-  plugin("android-library")
-}
-
-android.namespace = "dev.efemoney.lexiko.statemachine"
-
-dependencies {
-  commonMainImplementation(Deps.kotlin.stdlib.common)
-  commonMainImplementation(Deps.kotlinx.coroutines.core)
+  kotlin("jvm")
+  plugin("simple-layout")
 }
 
 dependencies {
-  commonTestImplementation(Deps.kotlin.test)
-  commonTestImplementation(Deps.kotlinx.datetime)
+  implementation(Deps.kotlin.stdlib.common)
+  implementation(Deps.kotlinx.coroutines.core)
+}
 
-  jvmTestImplementation(Deps.junit)
-  jvmTestImplementation(Deps.kotlinx.coroutines.test)
+dependencies {
+  testImplementation(Deps.junit)
+  testImplementation(Deps.kotlin.test)
+  testImplementation(Deps.kotlinx.datetime)
+  testImplementation(Deps.kotlinx.coroutines.test)
 }
