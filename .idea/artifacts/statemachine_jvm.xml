@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="statemachine-jvm">
-    <output-path>$PROJECT_DIR$/statemachine/build/libs</output-path>
-    <root id="archive" name="statemachine-jvm.jar">
-      <element id="module-output" name="lexiko.statemachine.jvmMain" />
-    </root>
-  </artifact>
-</component>

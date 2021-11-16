@@ -2,8 +2,13 @@
 
 dependencyResolutionManagement {
   repositories {
-    google()
     mavenCentral()
+    google()
     gradlePluginPortal()
+  }
+  versionCatalogs {
+    register("Deps") {
+      from(fileTree("../gradle/dependencies"))
+    }
   }
 }

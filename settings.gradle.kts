@@ -1,19 +1,46 @@
 @file:Suppress("UnstableApiUsage")
 
+enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
-  includeBuild("build-logic")
-
   repositories {
-    google()
     mavenCentral()
+    google()
     gradlePluginPortal()
   }
 }
 
 plugins {
-  id("plugin-lexiko-settings")
+  `gradle-enterprise`
+}
+
+gradleEnterprise {
+  buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
+    buildScanPublished {
+      exec { commandLine("open", buildScanUri) }
+    }
+  }
+}
+
+dependencyResolutionManagement {
+  repositories {
+    mavenCentral()
+    google()
+    val ktor = maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+
+    exclusiveContent {
+      forRepositories(ktor)
+      filter { includeGroupByRegex("^io\\.ktor.*") }
+    }
+  }
+  versionCatalogs {
+    register("Deps") {
+      from(fileTree("gradle/dependencies"))
+    }
+  }
 }
 
 include("statemachine")

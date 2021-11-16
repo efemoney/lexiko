@@ -19,7 +19,7 @@ import com.squareup.moshi.Moshi
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Subcomponent
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.util.*
 import javax.inject.Scope
 
@@ -43,7 +43,6 @@ internal interface ApplicationComponent {
 
   @Component.Factory
   interface Factory {
-
     fun create(@BindsInstance application: Application, environment: ApplicationEnvironment): ApplicationComponent
   }
 }
@@ -54,7 +53,6 @@ internal interface CallComponent {
 
   @Subcomponent.Factory
   interface Factory {
-
     fun create(@BindsInstance call: ApplicationCall): CallComponent
   }
 }

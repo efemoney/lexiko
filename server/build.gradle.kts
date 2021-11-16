@@ -1,9 +1,9 @@
 plugins {
   plugin("simple-layout")
   application
-  kotlin
-  `kotlin-kapt`
-  `kotlin-noarg`
+  kotlin("jvm")
+  kotlin("kapt")
+  kotlin("plugin.noarg")
 }
 
 application.mainClass.set("io.ktor.server.netty.EngineMain")
@@ -24,6 +24,13 @@ dependencies {
 
   implementation(Deps.ktor.server)
   implementation(Deps.ktor.server.netty)
+  implementation(Deps.ktor.server.plugins.auth)
+  implementation(Deps.ktor.server.plugins.autoHeadResponse)
+  implementation(Deps.ktor.server.plugins.cors)
+  implementation(Deps.ktor.server.plugins.compression)
+  implementation(Deps.ktor.server.plugins.conNeg)
+  implementation(Deps.ktor.server.plugins.callLogging)
+  implementation(Deps.ktor.server.plugins.websockets)
   implementation(Deps.ktor.server.moshi)
   implementation(Deps.ktor.auth)
   implementation(Deps.ktor.websockets)
@@ -31,5 +38,5 @@ dependencies {
   implementation(Deps.dagger)
   kapt(Deps.dagger.compiler)
 
-  implementation("com.google.firebase:firebase-admin:8.0.0")
+  implementation("com.google.firebase:firebase-admin:8.1.0")
 }

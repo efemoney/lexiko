@@ -1,7 +1,7 @@
 plugins {
   kotlin("multiplatform")
   plugin("target-android")
-  plugin("target-ios")
+  //plugin("target-ios")
   plugin("android-library")
   kotlin("kapt")
 }
@@ -24,7 +24,7 @@ dependencies {
 
   // IO (Disk + Networking)
   commonMainApi(Deps.ktor.client)
-  commonMainImplementation(Deps.okio.multiplatform)
+  commonMainImplementation(Deps.okio)
 
   androidMainApi(Deps.ktor.client.okHttp)
   androidMainImplementation(Deps.okHttp)

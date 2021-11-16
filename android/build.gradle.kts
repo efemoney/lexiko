@@ -1,10 +1,11 @@
 plugins {
   plugin("android-application")
   plugin("simple-layout")
-  plugin("compose-support")
   kotlin("android")
   kotlin("kapt")
 }
+
+android.buildFeatures.compose = true
 
 dependencies {
   implementation(Deps.kotlin.stdlib.jdk8)
@@ -24,12 +25,12 @@ dependencies {
   implementation(Deps.androidx.compose.ui)
   implementation(Deps.androidx.compose.ui.tooling)
   implementation(Deps.androidx.compose.material)
+  // implementation(Deps.androidx.compose.material3)
   implementation(Deps.androidx.compose.material.icons)
   implementation(Deps.androidx.compose.material.moarIcons)
 
   implementation(Deps.coil)
   implementation(Deps.coil.compose)
-  implementation(Deps.accompanist.coil)
   implementation(Deps.accompanist.insets)
   implementation(Deps.accompanist.insetsUi)
   implementation(Deps.accompanist.systemUiController)
