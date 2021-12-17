@@ -2,6 +2,7 @@ package dev.efemoney.lexiko.statemachine.internal
 
 import dev.efemoney.lexiko.statemachine.StateMachine
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlin.reflect.KClass
 
 @StateMachineDsl
@@ -39,8 +40,8 @@ internal class StateDefinition<SpecificStateT : StateT, StateT : Any, ActionT : 
   private val exitActions: List<StateAction<SpecificStateT, StateT, ActionT>>,
   internal val transitions: Map<KClass<out ActionT>, StateTransition<SpecificStateT, ActionT, StateT, ActionT>>,
 ) {
-  suspend fun exit(scope: StateActionScope<SpecificStateT, StateT>) = exitActions.forEach { scope.it() }
-  suspend fun enter(scope: StateActionScope<SpecificStateT, StateT>) = enterActions.forEach { scope.it() }
+  suspend fun exit(scope: StateActionScope<SpecificStateT, StateT, ActionT>) = exitActions.forEach { scope.it() }
+  suspend fun enter(scope: StateActionScope<SpecificStateT, StateT, ActionT>) = enterActions.forEach { scope.it() }
 }
 
 @StateMachineDsl
@@ -75,26 +76,21 @@ class StateDefinitionBuilder<SpecificStateT : StateT, StateT : Any, ActionT : An
 
 
 private typealias StateAction<State, StateT, ActionT> =
-  suspend StateActionScope<State, StateT>.() -> Unit
+  suspend StateActionScope<State, StateT, ActionT>.() -> Unit
 
 @StateMachineDsl
-class StateActionScope<SpecificStateT : StateT, StateT : Any>(
+class StateActionScope<SpecificStateT : StateT, StateT : Any, ActionT: Any> internal constructor(
   val state: SpecificStateT,
+  private val actions: MutableSharedFlow<ActionT>,
   coroutineScope: CoroutineScope
-) : CoroutineScope by coroutineScope {
-
-  @StateMachineDsl
-  fun transition(to: StateT) {
-
-  }
-}
+) : CoroutineScope by coroutineScope
 
 
 private typealias StateTransition<State, Action, StateT, ActionT> =
   suspend StateTransitionScope<State, Action, StateT, ActionT>.() -> Return<out StateT>
 
 @StateMachineDsl
-class StateTransitionScope<SpecificStateT : StateT, SpecificActionT : ActionT, StateT : Any, ActionT : Any>(
+class StateTransitionScope<SpecificStateT : StateT, SpecificActionT : ActionT, StateT : Any, ActionT : Any> internal constructor(
   val state: SpecificStateT,
   val action: SpecificActionT,
   coroutineScope: CoroutineScope

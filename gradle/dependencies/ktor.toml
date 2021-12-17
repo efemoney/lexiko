@@ -1,6 +1,5 @@
 [versions]
-ktor = "2.0.0-eap-262"
-ktor-client = "2.0.0-eap-258"
+ktor = "2.0.0-eap-284"
 
 [libraries]
 ktor-bom = { module = "io.ktor:ktor-bom", version.ref = "ktor" }
@@ -19,6 +18,6 @@ ktor-server-plugins-autoHeadResponse = { module = "io.ktor:ktor-server-auto-head
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-server-moshi = "com.hypercubetools:ktor-moshi-server:2.1.0"
 
-ktor-client = { module = "io.ktor:ktor-client-core", version.ref = "ktor-client" }
-ktor-client-okHttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor-client" }
+ktor-client = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okHttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-moshi = "com.hypercubetools:ktor-moshi-client:2.1.0"

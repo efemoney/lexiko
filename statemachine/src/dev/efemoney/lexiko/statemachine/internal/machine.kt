@@ -6,8 +6,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 internal class StateMachineImpl<StateT : Any, ActionT : Any>(
@@ -20,9 +21,15 @@ internal class StateMachineImpl<StateT : Any, ActionT : Any>(
   override val state = MutableStateFlow(initial)
 
   init {
-    actions
-      .onEach(::handleAction)
-      .launchIn(this)
+    launch {
+      val currentState = state.value
+      val currentDefinition = definitionOf(currentState)
+      currentDefinition.enter(StateActionScope(currentState, actions, this))
+
+      actions
+        .onEach(::handleAction)
+        .collect()
+    }
   }
 
   override suspend fun process(action: ActionT) = runCatching { actions.emit(action) }.isSuccess
@@ -35,16 +42,18 @@ internal class StateMachineImpl<StateT : Any, ActionT : Any>(
       actionError("No transition defined for action ($action) within state ($currentState)")
     }
 
-    val newState = when (val transitionReturn = StateTransitionScope(currentState, action, this).transition()) {
-      is ReturnNothing -> return@coroutineScope
-      is ReturnT -> transitionReturn.state
+    // We have a transition, lets exit current state
+    currentDefinition.exit(StateActionScope(currentState, actions, this))
+
+    // Then run transition
+    val newState = when (val result = transition(StateTransitionScope(currentState, action, this))) {
+      ReturnNothing -> return@coroutineScope
+      is ReturnT -> result.state
     }
     val newDefinition = definitionOf(newState)
 
-    // Run transition
-    currentDefinition.exit(StateActionScope(currentState, this))
     state.value = newState
-    newDefinition.enter(StateActionScope(newState, this))
+    newDefinition.enter(StateActionScope(newState, actions, this))
   }
 
   private fun definitionOf(state: StateT) = definitions.getOrElse(state::class) {

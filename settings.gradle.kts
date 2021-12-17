@@ -29,10 +29,8 @@ dependencyResolutionManagement {
   repositories {
     mavenCentral()
     google()
-    val ktor = maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-
     exclusiveContent {
-      forRepositories(ktor)
+      forRepositories(maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap"))
       filter { includeGroupByRegex("^io\\.ktor.*") }
     }
   }
@@ -44,8 +42,7 @@ dependencyResolutionManagement {
 }
 
 include("statemachine")
+include("server")
 include("engine")
 include("core")
-include("android")
-include("ios")
-include("server")
+include("app")

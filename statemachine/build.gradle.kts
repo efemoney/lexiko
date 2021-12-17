@@ -1,6 +1,5 @@
 plugins {
   kotlin("jvm")
-  plugin("simple-layout")
 }
 
 dependencies {

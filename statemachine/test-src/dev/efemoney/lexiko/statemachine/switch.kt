@@ -14,13 +14,12 @@ class SwitchTest {
   @Test
   fun test() = runBlockingTest {
 
-    val stateMachine = StateMachineOf {
-
-      initialState(On)
+    val stateMachine = StateMachine(initialState = On) {
 
       state<On> {
-        onExit {  }
-        on<Toggle> { transition(Off) }
+        on<Toggle> {
+          transition(Off)
+        }
       }
 
       state<Off> {

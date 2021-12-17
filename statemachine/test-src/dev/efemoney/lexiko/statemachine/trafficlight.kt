@@ -4,44 +4,38 @@ package dev.efemoney.lexiko.statemachine
 
 import app.cash.turbine.test
 import dev.efemoney.lexiko.statemachine.TrafficLight.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.seconds
 
-class StateMachineTest {
+class TrafficLightTest {
 
   @Test
-  fun test() = runBlockingTest {
+  fun test() = runTest {
+    trafficLightsStateMachine().state.test {
 
-    val stateMachine = StateMachineOf<TrafficLight, Unit> {
+    }
+  }
 
-      initialState(Red)
+  private fun CoroutineScope.trafficLightsStateMachine() = StateMachine {
 
-      state<Red> {
-        onEnter {
-          delay(5.seconds)
-          transition(Yellow)
-        }
-      }
+    initialState(Red)
 
-      state<Yellow> {
-        onEnter {
-          delay(10.seconds)
-          transition(Green)
-        }
-      }
-
-      state<Green> {
-        onEnter {
-          delay(15.seconds)
-          transition(Red)
-        }
-      }
+    state<Red> {
+      onEnter { delay(5.seconds) }
+      on<Next> { transition(Yellow) }
     }
 
-    stateMachine.state.test {
+    state<Yellow> {
+      onEnter { delay(10.seconds) }
+      on<Next> { transition(Green) }
+    }
 
+    state<Green> {
+      onEnter { delay(15.seconds) }
+      on<Next> { transition(Red) }
     }
   }
 }
@@ -51,3 +45,5 @@ sealed interface TrafficLight {
   object Yellow : TrafficLight
   object Green : TrafficLight
 }
+
+typealias Next = Unit

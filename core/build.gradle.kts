@@ -1,45 +1,35 @@
 plugins {
-  kotlin("multiplatform")
-  plugin("target-android")
-  //plugin("target-ios")
-  plugin("android-library")
-  kotlin("kapt")
+  id("com.android.library")
+  kotlin("android")
 }
 
 android.namespace = "dev.efemoney.lexiko"
 
 dependencies {
-  commonMainImplementation(projects.engine)
+  implementation(projects.engine)
 
-  commonMainImplementation(Deps.kotlin.stdlib.common)
-  androidMainImplementation(Deps.kotlin.stdlib.jdk8)
+  implementation(Deps.kotlin.stdlib.jdk8)
+  implementation(Deps.kotlinx.coroutines.core)
+  implementation(Deps.kotlinx.coroutines.android)
 
-  // Coroutines
-  commonMainImplementation(Deps.kotlinx.coroutines.core)
-  androidMainImplementation(Deps.kotlinx.coroutines.android)
+  implementation(Deps.dagger)
+  //kapt(Deps.dagger.compiler)
 
-  // DI
-  androidMainImplementation(Deps.dagger)
-  kapt(Deps.dagger.compiler)
+  api(Deps.ktor.client)
+  api(Deps.ktor.client.okHttp)
 
-  // IO (Disk + Networking)
-  commonMainApi(Deps.ktor.client)
-  commonMainImplementation(Deps.okio)
+  implementation(Deps.okio)
+  implementation(Deps.okHttp)
+  implementation(Deps.okHttp.logging)
 
-  androidMainApi(Deps.ktor.client.okHttp)
-  androidMainImplementation(Deps.okHttp)
-  androidMainImplementation(Deps.okHttp.logging)
+  implementation(Deps.uuid)
 
-  // UUID
-  commonMainImplementation(Deps.uuid)
-
-  // Navigation
-  androidMainImplementation(Deps.androidx.navigation.runtime)
+  implementation(Deps.androidx.navigation.runtime)
 }
 
 dependencies {
-  commonTestImplementation(kotlin("test"))
+  testImplementation(Deps.kotlin.test)
+  testImplementation(Deps.kotlinx.coroutines.test)
 
-  androidTestImplementation(Deps.junit)
-  androidTestImplementation(Deps.kotlinx.coroutines.test)
+  testImplementation(Deps.junit)
 }

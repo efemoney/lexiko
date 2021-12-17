@@ -15,13 +15,13 @@ interface StateMachine<out StateT : Any, in ActionT : Any> {
   suspend fun process(action: ActionT): Boolean
 }
 
-inline fun <reified StateT : Any, reified ActionT : Any> CoroutineScope.StateMachineOf(
+inline fun <reified StateT : Any, reified ActionT : Any> CoroutineScope.StateMachine(
   initialState: Any? = null,
   @BuilderInference builder: StateMachineBuilder<StateT, ActionT>.() -> Unit
-) = StateMachineBuilder<StateT, ActionT>(initialState as StateT?, this).apply(builder).build()
+) = StateMachineBuilder<StateT, ActionT>(initialState as StateT?, coroutineScope = this).apply(builder).build()
 
 @DelicateCoroutinesApi
-inline fun <reified StateT : Any, reified ActionT : Any> StateMachineOf(
+inline fun <reified StateT : Any, reified ActionT : Any> StateMachine(
   initialState: Any? = null,
   @BuilderInference builder: StateMachineBuilder<StateT, ActionT>.() -> Unit
-) = GlobalScope.StateMachineOf(initialState, builder)
+) = GlobalScope.StateMachine(initialState, builder)

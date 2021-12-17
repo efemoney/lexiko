@@ -1,5 +1,4 @@
 plugins {
-  plugin("simple-layout")
   application
   kotlin("jvm")
   kotlin("kapt")
@@ -31,8 +30,8 @@ dependencies {
   implementation(Deps.ktor.server.plugins.conNeg)
   implementation(Deps.ktor.server.plugins.callLogging)
   implementation(Deps.ktor.server.plugins.websockets)
+  implementation(Deps.ktor.server.plugins.auth)
   implementation(Deps.ktor.server.moshi)
-  implementation(Deps.ktor.auth)
   implementation(Deps.ktor.websockets)
 
   implementation(Deps.dagger)

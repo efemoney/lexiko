@@ -1,6 +1,5 @@
 plugins {
-  plugin("android-application")
-  plugin("simple-layout")
+  id("com.android.application")
   kotlin("android")
   kotlin("kapt")
 }

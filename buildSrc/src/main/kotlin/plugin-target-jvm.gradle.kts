@@ -1,3 +1,0 @@
-pluginManager.withMultiplatformPlugin {
-  kotlin.jvm()
-}

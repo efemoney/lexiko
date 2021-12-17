@@ -1,22 +1,19 @@
 plugins {
-  kotlin("multiplatform")
-  plugin("target-android")
-  //plugin("target-ios")
-  plugin("android-library")
+  id("com.android.library")
+  kotlin("android")
 }
 
 android.namespace = "dev.efemoney.lexiko.engine"
 
 dependencies {
-  commonMainImplementation(Deps.kotlin.stdlib.common)
-  commonMainImplementation(Deps.kotlinx.coroutines.core)
+  //implementation(projects.statemachine)
 
-  androidMainImplementation(projects.statemachine)
+  implementation(Deps.kotlin.stdlib.jdk8)
+  implementation(Deps.kotlinx.coroutines.core)
 }
 
 dependencies {
-  commonTestImplementation(Deps.kotlin.test)
-
-  androidTestImplementation(Deps.junit)
-  androidTestImplementation(Deps.kotlinx.coroutines.test)
+  implementation(Deps.kotlin.test)
+  implementation(Deps.kotlinx.coroutines.test)
+  implementation(Deps.junit)
 }
