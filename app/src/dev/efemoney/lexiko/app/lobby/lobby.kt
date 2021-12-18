@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import dev.efemoney.lexiko.app.R
-import dev.efemoney.lexiko.app.internal.retainedComponent
+import dev.efemoney.lexiko.app.internal.component
 import dev.efemoney.lexiko.app.ui.LexikoTheme
 import dev.efemoney.lexiko.app.ui.coolBlue
 import dev.efemoney.lexiko.app.ui.grayish
@@ -43,7 +43,7 @@ private fun Modifier.rowSize() = fillMaxWidth().heightIn(min = RowHeight)
 @Composable
 fun LobbyScreen() {
 
-  val lobbyUiState by retainedComponent()
+  val lobbyUiState by component()
     .lobbyPresenter
     .uiState
     .collectAsState()

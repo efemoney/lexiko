@@ -8,7 +8,7 @@ import dagger.Provides
 import dagger.Reusable
 import dev.efemoney.lexiko.app.navigation.RealNavigator
 import dev.efemoney.lexiko.internal.Dispatchers
-import dev.efemoney.lexiko.internal.RetainedScope
+import dev.efemoney.lexiko.internal.ForegroundScope
 import dev.efemoney.lexiko.navigation.Navigator
 import okhttp3.OkHttpClient
 
@@ -16,7 +16,7 @@ import okhttp3.OkHttpClient
 internal interface SingletonModule
 
 @Module
-internal interface RetainedModule {
+internal interface ForegroundModule {
 
   @Binds
   fun RealNavigator.asNavigator(): Navigator
@@ -25,18 +25,16 @@ internal interface RetainedModule {
   fun RealDispatchers.asDispatchers(): Dispatchers
 
   @Binds
-  fun RealRetainedScope.asRetainedScope(): RetainedScope
+  fun RealForegroundScope.asForegroundScope(): ForegroundScope
 
   companion object {
 
     @Provides
     @Reusable
-    fun imageLoader(context: Context, okHttp: OkHttpClient) =
+    fun imageLoader(context: Context, okHttp: dagger.Lazy<OkHttpClient>) =
       ImageLoader.Builder(context)
-        .callFactory(okHttp)
-        .componentRegistry {
-
-        }
+        .callFactory { okHttp.get() }
+        .components {}
         .build()
   }
 }

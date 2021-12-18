@@ -44,5 +44,5 @@ dependencyResolutionManagement {
 include("statemachine")
 include("server")
 include("engine")
-include("core")
-include("app")
+//include("core")
+//include("app")

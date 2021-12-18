@@ -11,7 +11,7 @@ import kotlin.jvm.JvmInline
 
 class LobbyPresenter @Inject internal constructor(
   private val dispatchers: Dispatchers,
-  private val scope: RetainedScope,
+  private val scope: ForegroundScope,
   private val navigator: Navigator,
 ) {
 

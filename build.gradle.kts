@@ -6,12 +6,11 @@ import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryDefaultConfig
 import com.android.build.api.variant.AndroidComponentsExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 
 plugins {
   alias(Deps.plugins.android.application) apply false
@@ -113,33 +112,43 @@ fun Project.KaptConvention() {
 
 fun Project.KotlinConvention() {
   pluginManager.withAnyKotlinPlugin {
-    kotlin {
-      sourceSets.configureEach {
-        languageSettings {
-          progressiveMode = true
 
-          listOf(
-            "kotlin.RequiresOptIn",
-            "kotlin.ExperimentalStdlibApi",
-            "kotlin.ExperimentalMultiplatform",
-            "kotlin.time.ExperimentalTime",
-            "kotlin.experimental.ExperimentalTypeInference",
-            "kotlinx.coroutines.FlowPreview",
-            "kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "coil.annotation.ExperimentalCoilApi",
-            "dev.efemoney.lexiko.engine.internal.InternalEngineApi",
-          ).forEach(::optIn)
+    tasks.withType<KotlinCompile<*>>().configureEach {
+      kotlinOptions {
+        verbose = true
+        freeCompilerArgs = freeCompilerArgs + listOf(
+          "-progressive",
 
-          listOf(
-            "InlineClasses",
-            "UnitConversion",
-          ).forEach(::enableLanguageFeature)
+          "-opt-in=kotlin.RequiresOptIn",
+          "-opt-in=kotlin.ExperimentalStdlibApi",
+          "-opt-in=kotlin.ExperimentalMultiplatform",
+          "-opt-in=kotlin.time.ExperimentalTime",
+          "-opt-in=kotlin.experimental.ExperimentalTypeInference",
+          "-opt-in=kotlinx.coroutines.FlowPreview",
+          "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+          "-opt-in=coil.annotation.ExperimentalCoilApi",
+          "-opt-in=dev.efemoney.lexiko.engine.internal.InternalEngineApi",
+
+          "-Xnew-inference",
+          "-Xinline-classes",
+          "-Xself-upper-bound-inference",
+          "-Xunrestricted-builder-inference",
+
+          "-Xjsr305=strict",
+          "-Xassertions=jvm", // https://publicobject.com/2019/11/18/kotlins-assert-is-not-like-javas-assert/
+          "-Xemit-jvm-type-annotations", // useful for static analysis tools or annotation processors.
+          "-Xjvm-default=all", // https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
+          "-Xproper-ieee754-comparisons",
+          "-Xstrict-java-nullability-assertions",
+
+          "-XXLanguage:+InlineClasses",
+          "-XXLanguage:+UnitConversion",
+        )
+
+        if (this is KotlinJvmCompile) kotlinOptions {
+          jvmTarget = "11"
+          javaParameters = true
         }
-      }
-
-      when (this) {
-        is KotlinSingleTargetExtension -> target.configureFreeArgs()
-        is KotlinMultiplatformExtension -> targets.configureEach { configureFreeArgs() }
       }
     }
   }
@@ -174,28 +183,6 @@ fun Project.SimpleLayoutConvention() {
       jniLibs.setSrcDirs(listOf(simpleName(name, "jniLibs")))
       shaders.setSrcDirs(listOf(simpleName(name, "shaders")))
       mlModels.setSrcDirs(listOf(simpleName(name, "mlModels")))
-    }
-  }
-}
-
-fun KotlinTarget.configureFreeArgs() = compilations.configureEach {
-
-  kotlinOptions {
-    verbose = true
-    freeCompilerArgs = freeCompilerArgs + listOf(
-      "-Xself-upper-bound-inference",
-      "-Xunrestricted-builder-inference",
-    )
-
-    if (this is KotlinJvmOptions) {
-      jvmTarget = "11"
-      javaParameters = true
-      freeCompilerArgs = freeCompilerArgs + listOf(
-        "-Xassertions=jvm", // https://publicobject.com/2019/11/18/kotlins-assert-is-not-like-javas-assert/
-        "-Xemit-jvm-type-annotations", // useful for static analysis tools or annotation processors.
-        "-Xjvm-default=all", // https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
-        "-Xstrict-java-nullability-assertions",
-      )
     }
   }
 }

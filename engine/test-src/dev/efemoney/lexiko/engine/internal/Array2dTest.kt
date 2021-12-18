@@ -1,6 +1,6 @@
 package dev.efemoney.lexiko.engine.internal
 
-import kotlin.test.Test
+import org.junit.Test
 import kotlin.test.assertEquals
 
 class Array2dTest {

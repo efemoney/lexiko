@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package dev.efemoney.lexiko.internal
 
 import kotlinx.coroutines.flow.MutableStateFlow

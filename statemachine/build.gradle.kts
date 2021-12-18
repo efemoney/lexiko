@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  implementation(Deps.kotlin.stdlib.common)
+  implementation(Deps.kotlin.stdlib.jdk8)
   implementation(Deps.kotlinx.coroutines.core)
 }
 

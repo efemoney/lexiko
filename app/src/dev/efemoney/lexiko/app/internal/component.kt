@@ -29,7 +29,7 @@ internal annotation class Retained
 )
 internal interface SingletonComponent {
 
-  val retainedComponentFactory: RetainedComponent.Factory
+  val retainedComponentFactory: ForegroundComponent.Factory
 
   @Component.Factory
   interface Factory {
@@ -42,12 +42,12 @@ internal interface SingletonComponent {
 }
 
 @Retained
-@Subcomponent(modules = [RetainedModule::class])
-internal abstract class RetainedComponent : ViewModel() {
+@Subcomponent(modules = [ForegroundModule::class])
+internal abstract class ForegroundComponent : ViewModel() {
 
   abstract val imageLoader: ImageLoader
 
-  abstract val realNavigator: RealNavigator
+  abstract val navigator: RealNavigator
 
   abstract val lobbyPresenter: LobbyPresenter
 
@@ -57,12 +57,12 @@ internal abstract class RetainedComponent : ViewModel() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>) = create() as T
 
-    abstract fun create(): RetainedComponent
+    abstract fun create(): ForegroundComponent
   }
 }
 
 @Composable
-internal fun retainedComponent() = RetainedComponent(LocalViewModelStoreOwner.current!!, LocalContext.current)
+internal fun component() = RetainedComponent(LocalViewModelStoreOwner.current!!, LocalContext.current)
 
-private fun RetainedComponent(owner: ViewModelStoreOwner, context: Context): RetainedComponent =
+private fun RetainedComponent(owner: ViewModelStoreOwner, context: Context): ForegroundComponent =
   ViewModelProvider(owner, (context.applicationContext as LexikoApplication).component.retainedComponentFactory).get()

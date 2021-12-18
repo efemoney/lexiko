@@ -1,6 +1,9 @@
 package dev.efemoney.lexiko.internal
 
-interface RetainedScope : CoroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+
+interface ForegroundScope : CoroutineScope
 
 interface Dispatchers {
   val main: CoroutineDispatcher

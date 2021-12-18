@@ -6,7 +6,7 @@ plugins {
 android.namespace = "dev.efemoney.lexiko.engine"
 
 dependencies {
-  //implementation(projects.statemachine)
+  implementation(projects.statemachine)
 
   implementation(Deps.kotlin.stdlib.jdk8)
   implementation(Deps.kotlinx.coroutines.core)
