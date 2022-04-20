@@ -1,8 +1,9 @@
 [versions]
-agp = "7.2.0-alpha06"
+agp = "7.3.0-alpha05"
 androidx-core = "1.7.0"
-accompanist = "0.21.4-beta"
+accompanist = "0.21.5-rc"
 androidx-compose = "1.1.0-rc01"
+androidx-compose-compiler = "1.1.0-rc02"
 androidx-compose-material3 = "1.0.0-alpha01"
 androidx-activity = "1.4.0"
 androidx-appcompat = "1.4.0"

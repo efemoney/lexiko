@@ -1,8 +1,8 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package dev.efemoney.lexiko.engine
 
-import dev.efemoney.lexiko.engine.internal.Array2d
-
-interface Board : Array2d<TileSlot>
+interface Board
 
 interface TileSlot {
   val position: Position
@@ -38,7 +38,9 @@ interface TilePoint {
 
 interface TileBag {
   val remainingTilesCount: Int
-  fun pickRandomTile(): Tile?
+  fun pickRandomTiles(count: Int): List<Tile>
 }
+
+inline fun TileBag.pickRandomTile(): Tile? = pickRandomTiles(1).firstOrNull()
 
 inline fun TileBag.isEmpty() = remainingTilesCount == 0

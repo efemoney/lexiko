@@ -19,8 +19,7 @@ plugins {
   alias(Deps.plugins.kotlin.jvm) apply false
   alias(Deps.plugins.kotlin.noarg) apply false
   alias(Deps.plugins.kotlin.kapt) apply false
-
-  id("com.github.ben-manes.versions") version "0.39.0"
+  id("com.github.ben-manes.versions") version "0.42.0"
 }
 
 subprojects {
@@ -89,8 +88,8 @@ fun Project.AndroidConvention() {
       }
     }
     androidComponents.finalizeDsl {
-      if (it.buildFeatures.compose == true) {
-        it.composeOptions.kotlinCompilerExtensionVersion = Deps.versions.androidx.compose.asProvider().get()
+      if (it.buildFeatures.compose == true) it.composeOptions {
+        kotlinCompilerExtensionVersion = Deps.versions.androidx.compose.compiler.get()
       }
     }
   }
@@ -139,10 +138,6 @@ fun Project.KotlinConvention() {
           "-Xemit-jvm-type-annotations", // useful for static analysis tools or annotation processors.
           "-Xjvm-default=all", // https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
           "-Xproper-ieee754-comparisons",
-          "-Xstrict-java-nullability-assertions",
-
-          "-XXLanguage:+InlineClasses",
-          "-XXLanguage:+UnitConversion",
         )
 
         if (this is KotlinJvmCompile) kotlinOptions {
@@ -196,7 +191,7 @@ tasks {
     delete(rootProject.buildDir)
   }
   dependencyUpdates {
-    rejectVersionIf { "ide" in candidate.version }
+    rejectVersionIf { "ide" in candidate.version || "dev" in candidate.version }
   }
 }
 
@@ -205,8 +200,6 @@ tasks {
 private typealias CommonExtensionT = CommonExtension<*, *, *, *>
 
 private typealias ComponentsExtensionT = AndroidComponentsExtension<CommonExtensionT, *, *>
-
-inline fun PluginDependenciesSpec.plugin(suffix: String) = id("plugin-$suffix")
 
 inline fun PluginManager.withAnyPlugin(vararg plugins: String, action: Action<AppliedPlugin>) =
   plugins.forEach { withPlugin(it, action) }

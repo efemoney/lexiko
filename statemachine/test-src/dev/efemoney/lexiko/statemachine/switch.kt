@@ -2,24 +2,23 @@
 
 package dev.efemoney.lexiko.statemachine
 
-import app.cash.turbine.test
 import dev.efemoney.lexiko.statemachine.SwitchState.Off
 import dev.efemoney.lexiko.statemachine.SwitchState.On
-import kotlinx.coroutines.test.runBlockingTest
+import dev.efemoney.lexiko.statemachine.ToggleEnum.SwitchOff
+import dev.efemoney.lexiko.statemachine.ToggleEnum.SwitchOn
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SwitchTest {
 
   @Test
-  fun test() = runBlockingTest {
+  fun test() = runTest(UnconfinedTestDispatcher()) {
 
     val stateMachine = StateMachine(initialState = On) {
-
       state<On> {
-        on<Toggle> {
-          transition(Off)
-        }
+        on<Toggle> { transition(Off) }
       }
 
       state<Off> {
@@ -27,23 +26,50 @@ class SwitchTest {
       }
     }
 
-    stateMachine.state.test {
-      assertEquals(expected = On, actual = awaitItem())
+    assertEquals(expected = On, stateMachine.state.value)
 
-      stateMachine.process(Toggle)
-      assertEquals(expected = Off, actual = awaitItem())
+    stateMachine.process(Toggle)
+    assertEquals(expected = Off, stateMachine.state.value)
 
-      stateMachine.process(Toggle)
-      assertEquals(expected = On, actual = awaitItem())
+    stateMachine.process(Toggle)
+    assertEquals(expected = On, stateMachine.state.value)
 
-      cancelAndIgnoreRemainingEvents()
+    stateMachine.cancel()
+  }
+
+  @Test
+  fun enumTest() = runTest(UnconfinedTestDispatcher()) {
+
+    val stateMachine = StateMachine(initialState = On) {
+      state<On> {
+        on<ToggleEnum>(guard = { action == SwitchOff }) {
+          transition(Off)
+        }
+      }
+      state<Off> {
+        on<ToggleEnum>(guard = { action == SwitchOn }) {
+          transition(On)
+        }
+      }
     }
+
+    assertEquals(expected = On, stateMachine.state.value)
+
+    stateMachine.process(SwitchOff)
+    assertEquals(expected = Off, stateMachine.state.value)
+
+    stateMachine.process(SwitchOn)
+    assertEquals(expected = On, stateMachine.state.value)
+
+    stateMachine.cancel()
   }
 }
 
-sealed interface SwitchState {
+private sealed interface SwitchState {
   object On : SwitchState
   object Off : SwitchState
 }
 
-object Toggle
+typealias Toggle = Unit
+
+private enum class ToggleEnum { SwitchOn, SwitchOff }

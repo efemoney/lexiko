@@ -1,5 +1,5 @@
 [versions]
-ktor = "2.0.0-eap-284"
+ktor = "2.0.0-eap-342"
 
 [libraries]
 ktor-bom = { module = "io.ktor:ktor-bom", version.ref = "ktor" }

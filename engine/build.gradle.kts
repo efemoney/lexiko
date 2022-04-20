@@ -1,9 +1,6 @@
 plugins {
-  id("com.android.library")
-  kotlin("android")
+  kotlin("jvm")
 }
-
-android.namespace = "dev.efemoney.lexiko.engine"
 
 dependencies {
   implementation(projects.statemachine)

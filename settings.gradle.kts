@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -41,6 +40,8 @@ dependencyResolutionManagement {
   }
 }
 
+include("dubbed:compiler-plugin")
+include("dubbed:gradle-plugin")
 include("statemachine")
 include("server")
 include("engine")
