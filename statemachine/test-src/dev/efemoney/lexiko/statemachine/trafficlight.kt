@@ -28,16 +28,16 @@ class TrafficLightTest {
       state.test {
         advanceTimeBy(1.seconds) // throwaway duration to offset runTest delay behavior
 
-        assertEquals(Red, awaitItem())
-        advanceTimeBy(trafficConfig.red)
+        repeat(5) {
+          assertEquals(Red, awaitItem())
+          advanceTimeBy(trafficConfig.red)
 
-        assertEquals(Yellow, awaitItem())
-        advanceTimeBy(trafficConfig.yellow)
+          assertEquals(Yellow, awaitItem())
+          advanceTimeBy(trafficConfig.yellow)
 
-        assertEquals(Green, awaitItem())
-        advanceTimeBy(trafficConfig.green)
-
-        assertEquals(Red, awaitItem())
+          assertEquals(Green, awaitItem())
+          advanceTimeBy(trafficConfig.green)
+        }
       }
 
       cancel()
@@ -49,7 +49,7 @@ class TrafficLightTest {
     initialState(Red)
 
     onEnterAny {
-      delay(config.durationFor(this.state))
+      delay(config.durationFor(state))
       emit(Next)
     }
 

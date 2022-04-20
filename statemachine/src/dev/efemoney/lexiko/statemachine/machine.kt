@@ -8,6 +8,8 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 interface StateMachine<out StateT : Any, in ActionT : Any> {
 
@@ -23,6 +25,7 @@ interface StateMachine<out StateT : Any, in ActionT : Any> {
 @StateMachineDsl
 inline fun <reified StateT : Any, ActionT : Any> CoroutineScope.StateMachine(
   initialState: Any? = null,
+  coroutineContext: CoroutineContext = EmptyCoroutineContext,
   @BuilderInference builder: StateMachineBuilder<StateT, ActionT>.() -> Unit
 ) = StateMachineBuilder<StateT, ActionT>(
   coroutineScope = this,
@@ -33,5 +36,6 @@ inline fun <reified StateT : Any, ActionT : Any> CoroutineScope.StateMachine(
 @StateMachineDsl
 inline fun <reified StateT : Any, reified ActionT : Any> StateMachine(
   initialState: Any? = null,
+  coroutineContext: CoroutineContext = EmptyCoroutineContext,
   @BuilderInference builder: StateMachineBuilder<StateT, ActionT>.() -> Unit
-) = GlobalScope.StateMachine(initialState, builder)
+) = GlobalScope.StateMachine(initialState, coroutineContext, builder)

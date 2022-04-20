@@ -86,6 +86,8 @@ fun Project.AndroidConvention() {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
       }
+
+      testCoverage { jacocoVersion = "0.8.8" }
     }
     androidComponents.finalizeDsl {
       if (it.buildFeatures.compose == true) it.composeOptions {

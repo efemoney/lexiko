@@ -28,10 +28,6 @@ dependencyResolutionManagement {
   repositories {
     mavenCentral()
     google()
-    exclusiveContent {
-      forRepositories(maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap"))
-      filter { includeGroupByRegex("^io\\.ktor.*") }
-    }
   }
   versionCatalogs {
     register("Deps") {
@@ -45,5 +41,5 @@ include("dubbed:gradle-plugin")
 include("statemachine")
 include("server")
 include("engine")
-//include("core")
-//include("app")
+include("core")
+include("app")
