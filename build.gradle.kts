@@ -169,7 +169,7 @@ fun Project.SimpleLayoutConvention() {
 
   pluginManager.withAnyAndroidPlugin {
     android.sourceSets.configureEach {
-      //manifest.srcFile(simpleName(name, "AndroidManifest.xml"))
+      manifest.srcFile("$name/AndroidManifest.xml")
       java.setSrcDirs(listOf(simpleName(name, "src")))
       kotlin.setSrcDirs(listOf(simpleName(name, "src")))
       res.setSrcDirs(listOf(simpleName(name, "res")))

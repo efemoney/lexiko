@@ -1,13 +1,16 @@
 package dev.efemoney.lexiko.lobby
 
-import dev.efemoney.lexiko.internal.*
+import dev.efemoney.lexiko.internal.Dispatchers
+import dev.efemoney.lexiko.internal.ForegroundScope
+import dev.efemoney.lexiko.internal.getValue
+import dev.efemoney.lexiko.internal.setValue
 import dev.efemoney.lexiko.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.jvm.JvmInline
+import javax.inject.Inject
 
 class LobbyPresenter @Inject internal constructor(
   private val dispatchers: Dispatchers,
@@ -49,7 +52,7 @@ sealed interface Player {
 
 data class Host(
   override val name: Name,
-  override val avatar: Avatar
+  override val avatar: Avatar,
 ) : Player
 
 data class Friend(

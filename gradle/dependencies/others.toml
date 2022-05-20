@@ -1,18 +1,18 @@
 [versions]
-coil = "2.0.0-rc03"
+coil = "2.0.0"
 moshi = "1.13.0"
 moshix = "0.16.6"
 okio = "3.1.0"
-okhttp = "5.0.0-alpha.6"
+okhttp = "5.0.0-alpha.7"
 retrofit = "2.9.0"
-dagger = "2.41"
+dagger = "2.42"
 glide = "4.12.0"
 material = "1.5.0"
 timber = "5.0.1"
 
 [libraries]
 jsr250 = "javax.annotation:jsr250-api:1.0"
-turbine = "app.cash.turbine:turbine:0.7.0"
+turbine = "app.cash.turbine:turbine:0.8.0"
 junit = "junit:junit:4.13.2"
 uuid = "com.benasher44:uuid:0.4.0"
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }

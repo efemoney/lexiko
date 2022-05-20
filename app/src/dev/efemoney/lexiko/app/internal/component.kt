@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package dev.efemoney.lexiko.app.internal
 
 import android.content.Context
