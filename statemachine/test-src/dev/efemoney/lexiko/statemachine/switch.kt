@@ -6,6 +6,8 @@ import dev.efemoney.lexiko.statemachine.SwitchState.Off
 import dev.efemoney.lexiko.statemachine.SwitchState.On
 import dev.efemoney.lexiko.statemachine.ToggleEnum.SwitchOff
 import dev.efemoney.lexiko.statemachine.ToggleEnum.SwitchOn
+import dev.efemoney.lexiko.statemachine.dsl.StateMachine
+import dev.efemoney.lexiko.statemachine.dsl.on
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -38,16 +40,16 @@ class SwitchTest {
   }
 
   @Test
-  fun enumTest() = runTest(UnconfinedTestDispatcher()) {
+  fun enumActionsTest() = runTest(UnconfinedTestDispatcher()) {
 
     val stateMachine = StateMachine(initialState = On) {
       state<On> {
-        on<ToggleEnum>(guard = { action == SwitchOff }) {
+        on(SwitchOff) {
           transition(Off)
         }
       }
       state<Off> {
-        on<ToggleEnum>(guard = { action == SwitchOn }) {
+        on(SwitchOn) {
           transition(On)
         }
       }

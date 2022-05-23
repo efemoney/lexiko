@@ -1,6 +1,10 @@
 package dev.efemoney.lexiko.engine
 
+import kotlin.coroutines.CoroutineContext
+
 interface Engine {
   val store: Store
-  suspend fun createGame(hostId: PlayerId): Game
+  val coroutineContext: CoroutineContext
+
+  suspend fun shutdown()
 }

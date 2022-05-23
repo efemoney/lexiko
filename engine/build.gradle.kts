@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
   implementation(projects.statemachine)
-
   implementation(Deps.kotlin.stdlib.jdk8)
   implementation(Deps.kotlinx.coroutines.core)
 }

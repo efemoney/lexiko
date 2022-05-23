@@ -1,31 +1,17 @@
 package dev.efemoney.lexiko.statemachine.internal
 
-import dev.efemoney.lexiko.statemachine.StateMachineDsl
+import dev.efemoney.lexiko.statemachine.dsl.ActionScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
-@StateMachineDsl
-interface ActionScope<out SpecificStateT : StateT, StateT : Any, in ActionT : Any> : CoroutineScope {
-
-  /** The state that was just entered/exited */
-  val state: SpecificStateT
-
-  /** Launch a coroutine to process an [action] as a side effect of [this][ActionScope] enter/exit action */
-  @StateMachineDsl
-  fun emit(action: ActionT)
-}
-
-internal class ActionScopeImpl<SpecificStateT : StateT, StateT : Any, ActionT : Any>(
+internal class ActionScopeImpl<SpecificStateT : StateT, StateT : Any, EventT : Any>(
   override val state: SpecificStateT,
-  private val actions: MutableSharedFlow<ActionT>,
+  private val events: MutableSharedFlow<EventT>,
   coroutineScope: CoroutineScope,
-) : ActionScope<SpecificStateT, StateT, ActionT>, CoroutineScope by coroutineScope {
+) : ActionScope<SpecificStateT, StateT, EventT>, CoroutineScope by coroutineScope {
 
-  override fun emit(action: ActionT) {
-    launch { actions.emit(action) }
+  override fun emit(event: EventT) {
+    launch { events.emit(event) }
   }
 }
-
-internal typealias StateAction<State, StateT, ActionT> =
-  suspend ActionScope<State, StateT, ActionT>.() -> Unit

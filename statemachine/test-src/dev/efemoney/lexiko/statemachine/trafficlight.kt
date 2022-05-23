@@ -4,6 +4,7 @@ package dev.efemoney.lexiko.statemachine
 
 import app.cash.turbine.test
 import dev.efemoney.lexiko.statemachine.TrafficLight.*
+import dev.efemoney.lexiko.statemachine.dsl.StateMachine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -38,6 +39,8 @@ class TrafficLightTest {
           assertEquals(Green, awaitItem())
           advanceTimeBy(trafficConfig.green)
         }
+
+        cancelAndIgnoreRemainingEvents()
       }
 
       cancel()

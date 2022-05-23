@@ -1,6 +1,8 @@
 package dev.efemoney.lexiko.engine
 
-import kotlin.jvm.JvmInline
+interface Games {
+  suspend fun newGame(): GameId
+}
 
 interface Game {
   val hostId: PlayerId
