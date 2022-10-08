@@ -1,15 +1,21 @@
 package dev.efemoney.lexiko.statemachine.internal
 
 import dev.efemoney.lexiko.statemachine.StateMachine
+import dev.efemoney.lexiko.statemachine.dsl.Action
 import dev.efemoney.lexiko.statemachine.dsl.ActionScope
 import dev.efemoney.lexiko.statemachine.dsl.ReturnNothing
 import dev.efemoney.lexiko.statemachine.dsl.ReturnT
-import dev.efemoney.lexiko.statemachine.dsl.StateAction
-import kotlinx.coroutines.*
+import dev.efemoney.lexiko.statemachine.dsl.Transition
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 sealed interface StateMachineInternal<out StateT : Any, in EventT : Any> : StateMachine<StateT, EventT> {
@@ -28,7 +34,7 @@ internal class StateMachineImpl<StateT : Any, EventT : Any>(
   override val state = MutableStateFlow(initialState)
   override val events = MutableSharedFlow<EventT>()
 
-  private val actionsJob = events
+  private val eventsJob = events
     .onEach(::handleAction)
     .launchIn(coroutineScope)
 
@@ -40,7 +46,7 @@ internal class StateMachineImpl<StateT : Any, EventT : Any>(
 
   override suspend fun cancel() {
     initJob.cancelAndJoin()
-    actionsJob.cancelAndJoin()
+    eventsJob.cancelAndJoin()
   }
 
   private suspend fun handleAction(action: EventT) = coroutineScope {
@@ -66,31 +72,44 @@ internal class StateMachineImpl<StateT : Any, EventT : Any>(
     newDefinition.enter(ActionScopeImpl(newState, events, coroutineScope))
   }
 
-  private fun definitionFor(state: StateT) = definitions.getOrElse(state::class) {
-    actionError("Could not find definition for current state ($state)")
-  }
+  private fun definitionFor(state: StateT) =
+    definitions[state::class] ?: definitions.filterKeys { it.isInstance(state) }.let {
+      if (it.isEmpty()) actionError("Could not find state definition for state [$state]")
+      if (it.size > 1) actionError(
+        "Multiple state definitions found for state [$state]: found definitions [${it.keys.joinToString()}]"
+      )
+      it.values.first()
+    }
 }
 
 internal class StateDefinition<SpecificStateT : StateT, StateT : Any, EventT : Any>(
-  private val enterAnyActions: List<StateAction<StateT, StateT, EventT>>,
-  private val exitAnyActions: List<StateAction<StateT, StateT, EventT>>,
-  private val enterActions: List<StateAction<SpecificStateT, StateT, EventT>>,
-  private val exitActions: List<StateAction<SpecificStateT, StateT, EventT>>,
+  private val enterAnyActions: List<Action<StateT, StateT, EventT>>,
+  private val exitAnyActions: List<Action<StateT, StateT, EventT>>,
+  private val enterActions: List<Action<SpecificStateT, StateT, EventT>>,
+  private val exitActions: List<Action<SpecificStateT, StateT, EventT>>,
   private val transitions: Map<KClass<out EventT>, List<GuardedTransition<SpecificStateT, EventT, StateT, EventT>>>,
 ) {
 
   suspend fun enter(scope: ActionScope<SpecificStateT, StateT, EventT>) {
-    enterAnyActions.forEach { scope.it() }
-    enterActions.forEach { scope.it() }
+    coroutineScope { // Run all global actions
+      for (action in enterAnyActions) launch { scope.action() }
+    }
+    coroutineScope { // Then run all state actions
+      for (action in enterActions) launch { scope.action() }
+    }
   }
 
   suspend fun exit(scope: ActionScope<SpecificStateT, StateT, EventT>) {
-    exitAnyActions.forEach { scope.it() }
-    exitActions.forEach { scope.it() }
+    coroutineScope { // Run all global actions
+      for (action in exitAnyActions) launch { scope.action() }
+    }
+    coroutineScope { // Then run all state actions
+      for (action in exitActions) launch { scope.action() }
+    }
   }
 
   fun findTransitionWith(scope: TransitionScopeImpl<SpecificStateT, EventT, StateT, EventT>):
-    StateTransition<SpecificStateT, EventT, StateT, EventT> {
+    Transition<SpecificStateT, EventT, StateT, EventT> {
 
     val actualTransitions = findSpecificClassTransitions(scope)
       .ifEmpty { findInstanceCheckTransitions(scope) } // Todo: Maybe find by superclass hierarchy?

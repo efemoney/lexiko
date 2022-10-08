@@ -1,10 +1,15 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
   id("com.android.application")
   kotlin("android")
   kotlin("kapt")
 }
 
-android.buildFeatures.compose = true
+android {
+  namespace = "dev.efemoney.lexiko.app"
+  buildFeatures.compose = true
+}
 
 dependencies {
   implementation(Deps.kotlin.stdlib.jdk8)

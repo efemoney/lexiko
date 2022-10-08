@@ -13,7 +13,18 @@ import dev.efemoney.lexiko.navigation.Navigator
 import okhttp3.OkHttpClient
 
 @Module
-internal interface SingletonModule
+internal interface SingletonModule {
+  companion object {
+
+    @Provides
+    @Reusable
+    fun imageLoader(context: Context, okHttp: dagger.Lazy<OkHttpClient>) =
+      ImageLoader.Builder(context)
+        .callFactory { okHttp.get() }
+        .components {}
+        .build()
+  }
+}
 
 @Module
 internal interface ForegroundModule {
@@ -26,15 +37,4 @@ internal interface ForegroundModule {
 
   @Binds
   fun RealForegroundScope.asForegroundScope(): ForegroundScope
-
-  companion object {
-
-    @Provides
-    @Reusable
-    fun imageLoader(context: Context, okHttp: dagger.Lazy<OkHttpClient>) =
-      ImageLoader.Builder(context)
-        .callFactory { okHttp.get() }
-        .components {}
-        .build()
-  }
 }

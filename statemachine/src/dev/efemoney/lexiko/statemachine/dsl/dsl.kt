@@ -1,11 +1,26 @@
 package dev.efemoney.lexiko.statemachine.dsl
 
 import StateBuilder
-import dev.efemoney.lexiko.statemachine.internal.StateTransition
-import dev.efemoney.lexiko.statemachine.internal.StateTransitionGuard
+import StateMachineBuilder
 
 @DslMarker
-annotation class StateMachineDsl
+internal annotation class StateMachineDsl
+
+@StateMachineDsl
+inline fun <
+  reified T : EventT,
+  EventT : Enum<*>,
+  StateT : Any,
+  > StateMachineBuilder<StateT, EventT>.onAny(
+  enum: T,
+  noinline transition: Transition<StateT, T, StateT, EventT>,
+) {
+  onAny(
+    eventType = T::class,
+    guard = { event == enum },
+    transition = transition,
+  )
+}
 
 @StateMachineDsl
 inline fun <
@@ -15,7 +30,7 @@ inline fun <
   StateT : Any,
   > StateBuilder<SpecificStateT, StateT, EventT>.on(
   enum: T,
-  noinline transition: StateTransition<SpecificStateT, T, StateT, EventT>,
+  noinline transition: Transition<SpecificStateT, T, StateT, EventT>,
 ) {
   on(
     type = T::class,
@@ -23,23 +38,3 @@ inline fun <
     transition = transition,
   )
 }
-
-@OverloadResolutionByLambdaReturnType
-@StateMachineDsl
-inline fun <
-  reified T : EventT,
-  SpecificStateT : StateT,
-  EventT : Any,
-  StateT : Any,
-  > StateBuilder<SpecificStateT, StateT, EventT>.on(
-  noinline guard: StateTransitionGuard<SpecificStateT, T, StateT, EventT> = { true },
-  crossinline notTransition: StateNoTransition<SpecificStateT, T, StateT, EventT>,
-) {
-  on(
-    guard = guard,
-    transition = { notTransition(); noTransition() }
-  )
-}
-
-internal typealias StateNoTransition<State, Event, StateT, EventT> =
-  suspend TransitionReturnScope<State, Event, StateT, EventT>.() -> Unit

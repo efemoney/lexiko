@@ -17,6 +17,7 @@ inline fun <
   @BuilderInference builder: StateMachineBuilder<StateT, EventT>.() -> Unit
 ) = StateMachineBuilder<StateT, EventT>(
   coroutineScope = this,/*CoroutineScope(newCoroutineContext(coroutineContext))*/
+  baseType = StateT::class,
   initialState = initialState as StateT?,
 ).apply(builder).build()
 

@@ -31,7 +31,7 @@ dependencyResolutionManagement {
   }
   versionCatalogs {
     register("Deps") {
-      from(fileTree("gradle/dependencies"))
+      from(fileTree("gradle/libs.versions.toml"))
     }
   }
 }

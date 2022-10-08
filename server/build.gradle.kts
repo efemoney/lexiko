@@ -37,5 +37,5 @@ dependencies {
   implementation(Deps.dagger)
   kapt(Deps.dagger.compiler)
 
-  implementation("com.google.firebase:firebase-admin:8.1.0")
+  implementation(Deps.firebase.admin)
 }

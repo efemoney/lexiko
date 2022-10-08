@@ -1,25 +1,14 @@
 package dev.efemoney.lexiko.internal
 
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import dev.efemoney.lexiko.engine.Games
-import dev.efemoney.lexiko.engine.Players
-import dev.efemoney.lexiko.local.LocalGames
-import dev.efemoney.lexiko.local.LocalPlayers
-import io.ktor.client.*
-import io.ktor.client.engine.okhttp.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
 import okhttp3.OkHttpClient
 
 @Module
 internal interface CoreModule {
-
-  @Binds
-  fun LocalGames.asGames(): Games
-
-  @Binds
-  fun LocalPlayers.asPlayers(): Players
 
   companion object {
 

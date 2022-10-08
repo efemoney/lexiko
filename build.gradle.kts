@@ -1,16 +1,16 @@
-@file:Suppress("DSL_SCOPE_VIOLATION", "NOTHING_TO_INLINE", "UNCHECKED_CAST", "FunctionName")
+@file:Suppress("DSL_SCOPE_VIOLATION", "NOTHING_TO_INLINE", "UNCHECKED_CAST", "FunctionName", "UnstableApiUsage")
 
 import Build_gradle.CommonExtensionT
 import Build_gradle.ComponentsExtensionT
 import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.CommonExtension
-import com.android.build.api.dsl.LibraryDefaultConfig
 import com.android.build.api.variant.AndroidComponentsExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
   alias(Deps.plugins.android.application) apply false
@@ -24,7 +24,6 @@ plugins {
 
 subprojects {
   AllTheBoms()
-  JavaConvention()
   TestsConvention()
   AndroidConvention()
   KaptConvention()
@@ -54,12 +53,6 @@ fun Project.AllTheBoms() {
   }
 }
 
-fun Project.JavaConvention() {
-  pluginManager.withPlugin("java") {
-    the<JavaPluginExtension>().toolchain.languageVersion.set(JavaLanguageVersion.of(11))
-  }
-}
-
 fun Project.TestsConvention() {
   tasks.withType<Test>().configureEach {
     useJUnit()
@@ -68,26 +61,22 @@ fun Project.TestsConvention() {
 }
 
 fun Project.AndroidConvention() {
-
   pluginManager.withAnyAndroidPlugin {
     android {
-      compileSdk = 31
+      compileSdk = 33
 
       defaultConfig {
         minSdk = 21
-        if (this is LibraryDefaultConfig) targetSdk = 30
-        if (this is ApplicationDefaultConfig) targetSdk = 30
+        if (this is ApplicationDefaultConfig) targetSdk = 33
         vectorDrawables.useSupportLibrary = true
       }
 
       compileOptions {
-        dependencies { "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:1.1.5") }
+        dependencies { "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:2.0.0") }
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
       }
-
-      testCoverage { jacocoVersion = "0.8.8" }
     }
     androidComponents.finalizeDsl {
       if (it.buildFeatures.compose == true) it.composeOptions {
@@ -101,7 +90,6 @@ fun Project.KaptConvention() {
   pluginManager.withPlugin("kotlin-kapt") {
     configure<KaptExtension> {
       correctErrorTypes = true
-      showProcessorTimings = true
       mapDiagnosticLocations = true
       arguments {
         arg("dagger.fastInit", "enabled")
@@ -113,7 +101,8 @@ fun Project.KaptConvention() {
 
 fun Project.KotlinConvention() {
   pluginManager.withAnyKotlinPlugin {
-
+    extensions.getByName<KotlinTopLevelExtension>("kotlin")
+      .jvmToolchain(17)
     tasks.withType<KotlinCompile<*>>().configureEach {
       kotlinOptions {
         verbose = true
@@ -143,7 +132,7 @@ fun Project.KotlinConvention() {
         )
 
         if (this is KotlinJvmCompile) kotlinOptions {
-          jvmTarget = "11"
+          jvmTarget = "17"
           javaParameters = true
         }
       }

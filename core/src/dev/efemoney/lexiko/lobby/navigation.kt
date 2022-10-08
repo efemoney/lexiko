@@ -1,5 +1,6 @@
 package dev.efemoney.lexiko.lobby
 
+import dev.efemoney.lexiko.navigation.ComposeScreen
 import dev.efemoney.lexiko.navigation.Navigator
 
-expect fun Navigator.gotoProfile()
+fun Navigator.gotoProfile() = navigate(ComposeScreen("profile"))

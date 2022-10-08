@@ -33,6 +33,8 @@ internal interface SingletonComponent {
 
   val retainedComponentFactory: ForegroundComponent.Factory
 
+  val imageLoader: ImageLoader
+
   @Component.Factory
   interface Factory {
 
@@ -46,8 +48,6 @@ internal interface SingletonComponent {
 @Retained
 @Subcomponent(modules = [ForegroundModule::class])
 internal abstract class ForegroundComponent : ViewModel() {
-
-  abstract val imageLoader: ImageLoader
 
   abstract val navigator: RealNavigator
 
