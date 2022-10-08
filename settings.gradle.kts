@@ -11,27 +11,21 @@ pluginManagement {
 }
 
 plugins {
-  `gradle-enterprise`
+  id("com.gradle.develocity") version "3.17"
+  id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
-gradleEnterprise {
-  buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-    buildScanPublished {
-      exec { commandLine("open", buildScanUri) }
-    }
-  }
+develocity.buildScan {
+  termsOfUseUrl = "https://gradle.com/terms-of-service"
+  termsOfUseAgree = "yes"
 }
 
 dependencyResolutionManagement {
   repositories {
     mavenCentral()
     google()
-  }
-  versionCatalogs {
-    register("Deps") {
-      from(fileTree("gradle/dependencies"))
+    maven("https://androidx.dev/storage/compose-compiler/repository/") {
+      content { includeModule("androidx.compose.compiler", "compiler") }
     }
   }
 }
@@ -39,7 +33,20 @@ dependencyResolutionManagement {
 include("dubbed:compiler-plugin")
 include("dubbed:gradle-plugin")
 include("statemachine")
+include("libs:di:scopes")
+include("libs:di:codegen")
+include("libs:navigation")
+include("libs:ui")
+include("ui:board")
+
 include("server")
+
 include("engine")
-include("core")
-include("app")
+include("engine:api")
+include("engine:impl")
+
+include("app:android")
+include("app:iOS")
+include("app:common")
+
+rootProject.name = "lexiko"

@@ -1,62 +1,91 @@
-@file:Suppress("DSL_SCOPE_VIOLATION", "NOTHING_TO_INLINE", "UNCHECKED_CAST", "FunctionName")
+@file:Suppress("NOTHING_TO_INLINE", "FunctionName", "UnstableApiUsage", "UNCHECKED_CAST")
 
+import Build_gradle.CommonComponentsExtensionT
 import Build_gradle.CommonExtensionT
-import Build_gradle.ComponentsExtensionT
-import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.CommonExtension
-import com.android.build.api.dsl.LibraryDefaultConfig
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.AndroidComponentsExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
+import com.squareup.anvil.plugin.AnvilExtension
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompilerOptions
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
-import org.jetbrains.kotlin.gradle.plugin.KaptExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.Architecture
+import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
-  alias(Deps.plugins.android.application) apply false
-  alias(Deps.plugins.android.library) apply false
-  alias(Deps.plugins.kotlin.android) apply false
-  alias(Deps.plugins.kotlin.jvm) apply false
-  alias(Deps.plugins.kotlin.noarg) apply false
-  alias(Deps.plugins.kotlin.kapt) apply false
-  id("com.github.ben-manes.versions") version "0.42.0"
+  alias(libs.plugins.android.application) apply false
+  alias(libs.plugins.android.library) apply false
+  alias(libs.plugins.kotlin.android) apply false
+  alias(libs.plugins.kotlin.jvm) apply false
+  alias(libs.plugins.kotlin.noarg) apply false
+  alias(libs.plugins.kotlin.compose) apply false
+  alias(libs.plugins.anvil) apply false
+  alias(libs.plugins.molecule) apply false
+  alias(libs.plugins.ktor) apply false
+  alias(libs.plugins.versions)
 }
 
 subprojects {
+  JvmTargetConvention()
   AllTheBoms()
-  JavaConvention()
   TestsConvention()
   AndroidConvention()
-  KaptConvention()
   KotlinConvention()
+  AnvilConvention()
+  ComposeConvention()
+  UseMoshiVersion()
   SimpleLayoutConvention()
 }
 
 // region Conventions
 
-fun Project.AllTheBoms() {
-  configurations.matching { it.name.contains("implementation", ignoreCase = true) }.configureEach {
-    val implementation = this
+fun Project.JvmTargetConvention() {
+  val target by lazy { libs.versions.jvmTarget.get() }
 
-    dependencies {
-      pluginManager.withAnyKotlinPlugin {
-        implementation(platform(Deps.ktor.bom))
-        implementation(platform(Deps.kotlin.bom))
-        implementation(platform(Deps.kotlinx.coroutines.bom))
-        implementation(platform(Deps.kotlinx.serialization.bom))
-      }
+  withPlugin("java") {
+    configure<JavaPluginExtension> {
+      sourceCompatibility = JavaVersion.toVersion(target)
+      sourceCompatibility = JavaVersion.toVersion(target)
+    }
+  }
 
-      pluginManager.withAnyAndroidPlugin {
-        implementation(platform(Deps.okio.bom))
-        implementation(platform(Deps.okHttp.bom))
-      }
+  withAnyKotlinPlugin {
+    kotlin.jvmCompilerOptions {
+      jvmTarget = JvmTarget.fromTarget(target)
+    }
+  }
+
+  withAnyAndroidPlugin {
+    android.compileOptions {
+      targetCompatibility = JavaVersion.toVersion(target)
+      targetCompatibility = JavaVersion.toVersion(target)
     }
   }
 }
 
-fun Project.JavaConvention() {
-  pluginManager.withPlugin("java") {
-    the<JavaPluginExtension>().toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+fun Project.AllTheBoms() {
+  configurations.named { "kotlinCompiler" !in it }.configureEach {
+    val configuration = this
+    dependencies {
+      withAnyKotlinPlugin {
+        configuration(platform(libs.ktor.bom))
+        configuration(platform(libs.kotlin.bom))
+        configuration(platform(libs.kotlinx.coroutines.bom))
+        configuration(platform(libs.kotlinx.serialization.bom))
+      }
+      withAnyAndroidPlugin {
+        configuration(platform(libs.okio.bom))
+        configuration(platform(libs.okHttp.bom))
+      }
+    }
   }
 }
 
@@ -68,107 +97,98 @@ fun Project.TestsConvention() {
 }
 
 fun Project.AndroidConvention() {
-
-  pluginManager.withAnyAndroidPlugin {
+  withAnyAndroidPlugin {
     android {
-      compileSdk = 31
-
-      defaultConfig {
-        minSdk = 21
-        if (this is LibraryDefaultConfig) targetSdk = 30
-        if (this is ApplicationDefaultConfig) targetSdk = 30
-        vectorDrawables.useSupportLibrary = true
-      }
-
-      compileOptions {
-        dependencies { "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:1.1.5") }
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-      }
-
-      testCoverage { jacocoVersion = "0.8.8" }
-    }
-    androidComponents.finalizeDsl {
-      if (it.buildFeatures.compose == true) it.composeOptions {
-        kotlinCompilerExtensionVersion = Deps.versions.androidx.compose.compiler.get()
-      }
-    }
-  }
-}
-
-fun Project.KaptConvention() {
-  pluginManager.withPlugin("kotlin-kapt") {
-    configure<KaptExtension> {
-      correctErrorTypes = true
-      showProcessorTimings = true
-      mapDiagnosticLocations = true
-      arguments {
-        arg("dagger.fastInit", "enabled")
-        arg("dagger.experimentalDaggerErrorMessages", "enabled")
-      }
+      compileSdk = 34
+      defaultConfig.minSdk = 26
+      compileOptions { isCoreLibraryDesugaringEnabled = true }
+      dependencies { "coreLibraryDesugaring"(libs.android.tools.desugar) }
     }
   }
 }
 
 fun Project.KotlinConvention() {
-  pluginManager.withAnyKotlinPlugin {
-
-    tasks.withType<KotlinCompile<*>>().configureEach {
-      kotlinOptions {
+  withAnyKotlinPlugin {
+    kotlin {
+      jvmToolchain(libs.versions.jvm.get().toInt())
+      compilerOptions {
         verbose = true
-        freeCompilerArgs = freeCompilerArgs + listOf(
-          "-progressive",
+        progressiveMode = true
+        optIn.appendAll(
+          "kotlin.RequiresOptIn",
+          "kotlin.ExperimentalStdlibApi",
+          "kotlin.ExperimentalMultiplatform",
+          "kotlin.time.ExperimentalTime",
+          "kotlin.experimental.ExperimentalTypeInference",
+          "kotlinx.coroutines.FlowPreview",
+          "kotlinx.coroutines.ExperimentalCoroutinesApi",
+          "coil.annotation.ExperimentalCoilApi",
+          "dev.efemoney.lexiko.engine.internal.InternalEngineApi",
+        )
+        freeCompilerArgs.appendAll(
+          "-XXLanguage:+ValueClasses",
+          "-XXLanguage:+ContextReceivers",
+          "-XXLanguage:+BreakContinueInInlineLambdas",
+          "-XXLanguage:+UnitConversionsOnArbitraryExpressions",
+          "-XXLanguage:+PackagePrivateFileClassesWithAllPrivateMembers", // KT-10884
 
-          "-opt-in=kotlin.RequiresOptIn",
-          "-opt-in=kotlin.ExperimentalStdlibApi",
-          "-opt-in=kotlin.ExperimentalMultiplatform",
-          "-opt-in=kotlin.time.ExperimentalTime",
-          "-opt-in=kotlin.experimental.ExperimentalTypeInference",
-          "-opt-in=kotlinx.coroutines.FlowPreview",
-          "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-          "-opt-in=coil.annotation.ExperimentalCoilApi",
-          "-opt-in=dev.efemoney.lexiko.engine.internal.InternalEngineApi",
-
-          "-Xnew-inference",
-          "-Xinline-classes",
           "-Xself-upper-bound-inference",
           "-Xunrestricted-builder-inference",
-
           "-Xjsr305=strict",
           "-Xassertions=jvm", // https://publicobject.com/2019/11/18/kotlins-assert-is-not-like-javas-assert/
-          "-Xemit-jvm-type-annotations", // useful for static analysis tools or annotation processors.
           "-Xjvm-default=all", // https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
+          "-Xemit-jvm-type-annotations", // useful for static analysis tools or annotation processors.
           "-Xproper-ieee754-comparisons",
         )
-
-        if (this is KotlinJvmCompile) kotlinOptions {
-          jvmTarget = "11"
-          javaParameters = true
-        }
       }
+      jvmCompilerOptions {
+        javaParameters = true
+      }
+    }
+  }
+}
+
+fun Project.AnvilConvention() {
+  withPlugin("com.squareup.anvil") {
+    configure<AnvilExtension> {
+      // We configure Anvil for modules that do not @MergeComponents to:
+      // - generate factories, so that we can skip dagger compiler entirely for the module
+      // - we also disable component merging: the idea here is that modules either merge components
+      //   or they contribute dependencies, never both.
+      val mergesComponent = project.name in listOf("integration")
+      generateDaggerFactories = !mergesComponent
+      disableComponentMerging = !mergesComponent
+      /*syncGeneratedSources = true*/
+    }
+    dependencies {
+      "anvil"(projects.libs.di.codegen)
+      "implementation"(libs.dagger)
     }
   }
 }
 
 fun Project.SimpleLayoutConvention() {
 
-  pluginManager.withPlugin("java") {
+  withPlugin("java") {
     the<JavaPluginExtension>().sourceSets.configureEach {
       java.setSrcDirs(listOf(simpleName(name, "src")))
       resources.setSrcDirs(listOf(simpleName(name, "resources")))
     }
   }
 
-  pluginManager.withAnyKotlinPlugin {
+  withAnyKotlinPlugin {
     kotlin.sourceSets.configureEach {
       kotlin.setSrcDirs(listOf(simpleName(name, "src")))
       resources.setSrcDirs(listOf(simpleName(name, "resources")))
     }
   }
 
-  pluginManager.withAnyAndroidPlugin {
+  withAnyAndroidPlugin {
     android.sourceSets.configureEach {
+      // AS & IntelliJ map (roughly) a source set to a 'module'
+      // This is important because in AS, whatever folder the manifest.xml file lives in becomes a source root
+      // according to this comment https://issuetracker.google.com/issues/232007221#comment13
+      // We keep manifest files in their own unique folders so intellij does not choke on "duplicate source roots"
       manifest.srcFile("$name/AndroidManifest.xml")
       java.setSrcDirs(listOf(simpleName(name, "src")))
       kotlin.setSrcDirs(listOf(simpleName(name, "src")))
@@ -180,6 +200,34 @@ fun Project.SimpleLayoutConvention() {
       jniLibs.setSrcDirs(listOf(simpleName(name, "jniLibs")))
       shaders.setSrcDirs(listOf(simpleName(name, "shaders")))
       mlModels.setSrcDirs(listOf(simpleName(name, "mlModels")))
+      baselineProfiles.setSrcDirs(listOf(simpleName(name, "baselineProfiles")))
+    }
+  }
+}
+
+fun Project.ComposeConvention() {
+  withPlugin("org.jetbrains.kotlin.plugin.compose") {
+    configure<ComposeCompilerGradlePluginExtension> {
+      val reporting = the<ReportingExtension>()
+      val reportsEnabled = providers.gradleProperty("lexiko.compose.enableReports")
+      val reportsDir = reporting.baseDirectory.dir("compose").filter { reportsEnabled.orNull == "true" }
+      reportsDestination = reportsDir
+      metricsDestination = reportsDir
+      enableIntrinsicRemember = true
+      enableExperimentalStrongSkippingMode = true
+      stabilityConfigurationFile = rootProject.file("compose-stability-config.txt")
+    }
+    dependencies {
+      "implementation"(libs.jetbrains.compose.runtime)
+    }
+  }
+}
+
+fun Project.UseMoshiVersion() {
+  // MoshiX add a moshi dependency with version 1.13.0, we override with our own higher version
+  withPlugin("dev.zacsweers.moshix") {
+    dependencies {
+      "implementation"(libs.moshi)
     }
   }
 }
@@ -190,7 +238,7 @@ fun simpleName(name: String, suffix: String) = if (name == "main") suffix else "
 
 tasks {
   register<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
   }
   dependencyUpdates {
     rejectVersionIf { "ide" in candidate.version || "dev" in candidate.version }
@@ -199,58 +247,124 @@ tasks {
 
 // region DSL
 
-private typealias CommonExtensionT = CommonExtension<*, *, *, *>
+private typealias CommonExtensionT = CommonExtension<*, *, *, *, *, *>
 
-private typealias ComponentsExtensionT = AndroidComponentsExtension<CommonExtensionT, *, *>
+private typealias CommonComponentsExtensionT<T> = AndroidComponentsExtension<T, *, *>
 
-inline fun PluginManager.withAnyPlugin(vararg plugins: String, action: Action<AppliedPlugin>) =
+
+inline val Project.buildDirectory get() = layout.buildDirectory
+
+inline val ProviderFactory.isCi get() = environmentVariable("CI").map(String::toBoolean).getOrElse(false)
+
+inline fun Project.withAnyImplementationAndApiConfigurations(action: Action<Configuration>) {
+  configurations
+    .named { it.contains("api", true) || it.contains("implementation", true) }
+    .configureEach(action)
+}
+
+inline fun Project.withPlugin(plugin: String, action: Action<AppliedPlugin>) =
+  pluginManager.withPlugin(plugin, action)
+
+inline fun Project.withAnyPlugin(vararg plugins: String, action: Action<AppliedPlugin>) =
   plugins.forEach { withPlugin(it, action) }
 
-inline fun PluginManager.withAnyKotlinPlugin(action: Action<AppliedKotlinPlugin<KotlinProjectExtension>>) {
+inline fun Project.withAnyKotlinPlugin(action: Action<AppliedKotlinPlugin<KotlinProjectExtension>>) {
   withAnyPlugin(
-    "org.jetbrains.kotlin.js",
     "org.jetbrains.kotlin.jvm",
     "org.jetbrains.kotlin.android",
     "org.jetbrains.kotlin.multiplatform",
-  ) {
-    action.execute(AppliedKotlinPlugin(this))
+  ) { action.execute(AppliedKotlinPlugin(this)) }
+}
+
+inline fun Project.withAnyAndroidPlugin(
+  action: Action<AppliedAndroidPlugin<CommonExtensionT, CommonComponentsExtensionT<CommonExtensionT>>>
+) {
+  withAnyPlugin("com.android.application", "com.android.library") {
+    action.execute(AppliedAndroidPlugin(this))
   }
 }
 
-inline fun PluginManager.withMultiplatformPlugin(action: Action<AppliedKotlinPlugin<KotlinMultiplatformExtension>>) {
+inline fun Project.withAndroidLibrary(
+  action: Action<AppliedAndroidPlugin<LibraryExtension, LibraryAndroidComponentsExtension>>
+) {
+  withPlugin("com.android.library") {
+    action.execute(AppliedAndroidPlugin(this))
+  }
+}
+
+inline fun Project.withKotlinMultiplatformPlugin(action: Action<AppliedKotlinPlugin<KotlinMultiplatformExtension>>) {
   withPlugin("org.jetbrains.kotlin.multiplatform") {
     action.execute(AppliedKotlinPlugin(this))
   }
 }
 
-inline fun PluginManager.withAnyAndroidPlugin(action: Action<AppliedAndroidPlugin>) {
-  withAnyPlugin(
-    "com.android.application",
-    "com.android.library",
-  ) {
-    action.execute(AppliedAndroidPlugin(this))
+inline fun Project.withKotlinJvmOrAndroidPlugins(action: Action<AppliedKotlinPlugin<KotlinProjectExtension>>) {
+  withAnyPlugin("org.jetbrains.kotlin.jvm", "org.jetbrains.kotlin.android") {
+    action.execute(AppliedKotlinPlugin(this))
   }
 }
 
+inline fun Configuration.withDependency(
+  dependency: Provider<MinimalExternalModuleDependency>,
+  action: Action<ExternalModuleDependency>,
+) {
+  incoming.dependencies.configureEach {
+    if (this is ExternalModuleDependency && this.module == dependency.get().module) action(this)
+  }
+}
 
-class AppliedAndroidPlugin(appliedPlugin: AppliedPlugin) : AppliedPlugin by appliedPlugin {
+inline fun Configuration.withDependency(
+  dependency: ProviderConvertible<MinimalExternalModuleDependency>,
+  action: Action<ExternalModuleDependency>,
+) = withDependency(dependency.asProvider(), action)
 
-  inline val Project.android get() = extensions.getByName<CommonExtensionT>("android")
+class AppliedAndroidPlugin<T : CommonExtensionT, U : CommonComponentsExtensionT<T>>(
+  appliedPlugin: AppliedPlugin
+) : AppliedPlugin by appliedPlugin {
 
-  inline fun Project.android(action: Action<CommonExtensionT>) = extensions.configure("android", action)
+  inline val Project.android get() = extensions.getByName("android") as T
 
-  inline val Project.androidComponents
-    get() = extensions.getByName<ComponentsExtensionT>("androidComponents")
+  inline val Project.androidComponents get() = extensions.getByName("androidComponents") as U
 
-  inline fun Project.androidComponents(action: Action<ComponentsExtensionT>) =
-    extensions.configure("androidComponents", action)
+  inline fun Project.android(action: Action<T>) = extensions.configure("android", action)
+
+  inline fun Project.androidComponents(action: Action<U>) = extensions.configure("androidComponents", action)
 }
 
 class AppliedKotlinPlugin<T : KotlinProjectExtension>(appliedPlugin: AppliedPlugin) : AppliedPlugin by appliedPlugin {
 
-  inline val Project.kotlin get() = extensions.getByName<KotlinProjectExtension>("kotlin") as T
+  inline val Project.kotlin get() = extensions.getByName("kotlin") as T
 
   inline fun Project.kotlin(action: Action<T>) = extensions.configure("kotlin", action)
+
+  inline fun KotlinProjectExtension.compilerOptions(action: Action<KotlinCommonCompilerOptions>) {
+    if (this is KotlinJvmProjectExtension) action.execute(compilerOptions)
+    if (this is KotlinAndroidProjectExtension) action.execute(compilerOptions)
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    if (this is KotlinMultiplatformExtension) action.execute(compilerOptions)
+  }
+
+  inline fun KotlinProjectExtension.jvmCompilerOptions(action: Action<KotlinJvmCompilerOptions>) {
+    if (this is KotlinJvmProjectExtension) compilerOptions(action)
+    if (this is KotlinAndroidProjectExtension) compilerOptions(action)
+  }
+
+  inline fun KotlinMultiplatformExtension.nativeTargets(
+    family: Family? = null,
+    architecture: Architecture? = null,
+    action: Action<KotlinNativeTarget>,
+  ) {
+    targets.withType<KotlinNativeTarget>()
+      .matching {
+        (family == null || it.konanTarget.family == family) &&
+          (architecture == null || it.konanTarget.architecture == architecture)
+      }
+      .configureEach(action)
+  }
+
+  inline fun KotlinMultiplatformExtension.iosTargets(action: Action<KotlinNativeTarget>) {
+    nativeTargets(Family.IOS, action = action)
+  }
 }
 
 // endregion

@@ -1,7 +1,9 @@
 package dev.efemoney.lexiko.app.internal
 
 import android.content.Context
-import coil.ImageLoader
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.serviceLoaderEnabled
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -13,7 +15,19 @@ import dev.efemoney.lexiko.navigation.Navigator
 import okhttp3.OkHttpClient
 
 @Module
-internal interface SingletonModule
+internal interface SingletonModule {
+  companion object {
+
+    @Provides
+    @Reusable
+    fun imageLoader(context: Context, okHttp: dagger.Lazy<OkHttpClient>) =
+      ImageLoader.Builder(context)
+        // Add okhttp fetching manually so we can specify a custom OkHttpClient instance.
+        .components { add(OkHttpNetworkFetcherFactory(okHttp::get)) }
+        .serviceLoaderEnabled(false)
+        .build()
+  }
+}
 
 @Module
 internal interface ForegroundModule {
@@ -26,15 +40,4 @@ internal interface ForegroundModule {
 
   @Binds
   fun RealForegroundScope.asForegroundScope(): ForegroundScope
-
-  companion object {
-
-    @Provides
-    @Reusable
-    fun imageLoader(context: Context, okHttp: dagger.Lazy<OkHttpClient>) =
-      ImageLoader.Builder(context)
-        .callFactory { okHttp.get() }
-        .components {}
-        .build()
-  }
 }

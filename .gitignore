@@ -1,21 +1,19 @@
-**/.idea/caches
-**/.idea/dictionaries
-**/.idea/libraries
-**/.idea/modules
-**/.idea/shelf
-**/.idea/assetWizardSettings.xml
-**/.idea/checkstyle-idea.xml
-**/.idea/dictionaries.xml
-**/.idea/modules.xml
-**/.idea/misc.xml
-**/.idea/navEditor.xml
-**/.idea/workspace.xml
+.idea/**
+!.idea/codeStyles/
+!.idea/vcs.xml
+!.idea/gradle.xml
 
+.gradle/
 **/.gradle/
+
+.kotlin/
+
+build/
 **/build/
-**/captures/
+
+local.properties
 **/local.properties
 
-/server/application-local.conf
-/server/service-account.json
-/server/firebase-config.json
+server/application-local.conf
+server/service-account.json
+server/firebase-config.json

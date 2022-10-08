@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE", "DEPRECATION")
-
 package dev.efemoney.lexiko.statemachine
 
 import dev.efemoney.lexiko.statemachine.SwitchState.Off
@@ -18,7 +16,8 @@ class SwitchTest {
   @Test
   fun test() = runTest(UnconfinedTestDispatcher()) {
 
-    val stateMachine = StateMachine(initialState = On) {
+    val stateMachine = StateMachine<SwitchState, Toggle>(initialState = On) {
+
       state<On> {
         on<Toggle> { transition(Off) }
       }
@@ -43,11 +42,13 @@ class SwitchTest {
   fun enumActionsTest() = runTest(UnconfinedTestDispatcher()) {
 
     val stateMachine = StateMachine(initialState = On) {
+
       state<On> {
         on(SwitchOff) {
           transition(Off)
         }
       }
+
       state<Off> {
         on(SwitchOn) {
           transition(On)
@@ -68,8 +69,8 @@ class SwitchTest {
 }
 
 private sealed interface SwitchState {
-  object On : SwitchState
-  object Off : SwitchState
+  data object On : SwitchState
+  data object Off : SwitchState
 }
 
 typealias Toggle = Unit

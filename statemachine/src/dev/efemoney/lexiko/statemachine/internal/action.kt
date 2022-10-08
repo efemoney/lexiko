@@ -7,11 +7,11 @@ import kotlinx.coroutines.launch
 
 internal class ActionScopeImpl<SpecificStateT : StateT, StateT : Any, EventT : Any>(
   override val state: SpecificStateT,
-  private val events: MutableSharedFlow<EventT>,
-  coroutineScope: CoroutineScope,
-) : ActionScope<SpecificStateT, StateT, EventT>, CoroutineScope by coroutineScope {
+  private val events: MutableSharedFlow<Event<EventT>>,
+  private val coroutineScope: CoroutineScope,
+) : ActionScope<SpecificStateT, StateT, EventT> {
 
   override fun emit(event: EventT) {
-    launch { events.emit(event) }
+    coroutineScope.launch { events.emit(Event.RunAction(event)) }
   }
 }

@@ -1,39 +1,40 @@
 plugins {
-  id("com.android.application")
-  kotlin("android")
-  kotlin("kapt")
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.compose)
+  alias(libs.plugins.ksp)
 }
 
-android.buildFeatures.compose = true
+android {
+  namespace = "dev.efemoney.lexiko.app"
+  defaultConfig {
+    targetSdk = 34
+  }
+}
 
 dependencies {
-  implementation(Deps.kotlin.stdlib.jdk8)
-  implementation(Deps.kotlinx.immutable.jvm)
-  implementation(Deps.kotlinx.coroutines.android)
+  implementation(libs.kotlin.stdlib)
+  implementation(libs.kotlinx.immutable.jvm)
+  implementation(libs.kotlinx.coroutines.android)
 
-  implementation(projects.core)
+  implementation(libs.androidx.core)
+  implementation(libs.androidx.activity)
+  implementation(libs.androidx.activity.compose)
+  implementation(libs.androidx.appcompat)
+  implementation(libs.androidx.fragment)
+  implementation(libs.androidx.navigation.compose)
 
-  implementation(Deps.androidx.core)
-  implementation(Deps.androidx.activity)
-  implementation(Deps.androidx.activity.compose)
-  implementation(Deps.androidx.appcompat)
-  implementation(Deps.androidx.fragment)
-  implementation(Deps.androidx.navigation.compose)
+  implementation(libs.androidx.compose.ui)
+  implementation(libs.androidx.compose.ui.tooling)
+  implementation(libs.androidx.compose.material)
+  implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.compose.material.icons)
+  implementation(libs.androidx.compose.material.icons.extended)
 
-  implementation(Deps.androidx.compose.runtime)
-  implementation(Deps.androidx.compose.ui)
-  implementation(Deps.androidx.compose.ui.tooling)
-  implementation(Deps.androidx.compose.material)
-  // implementation(Deps.androidx.compose.material3)
-  implementation(Deps.androidx.compose.material.icons)
-  implementation(Deps.androidx.compose.material.moarIcons)
+  implementation(libs.coil)
+  implementation(libs.coil.okhttp)
+  implementation(libs.coil.compose)
 
-  implementation(Deps.coil)
-  implementation(Deps.coil.compose)
-  implementation(Deps.accompanist.insets)
-  implementation(Deps.accompanist.insetsUi)
-  implementation(Deps.accompanist.systemUiController)
-
-  implementation(Deps.dagger)
-  kapt(Deps.dagger.compiler)
+  implementation(libs.dagger)
+  ksp(libs.dagger.compiler)
 }

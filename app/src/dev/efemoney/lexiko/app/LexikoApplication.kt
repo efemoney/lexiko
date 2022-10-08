@@ -2,7 +2,7 @@ package dev.efemoney.lexiko.app
 
 import android.app.Application
 import dev.efemoney.lexiko.DaggerCoreComponent
-import dev.efemoney.lexiko.app.internal.DaggerAppComponent
+import dev.efemoney.lexiko.app.internal.DaggerSingletonComponent
 import dev.efemoney.lexiko.app.internal.SingletonComponent
 
 class LexikoApplication : Application() {
@@ -11,6 +11,8 @@ class LexikoApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
-    component = DaggerAppComponent.factory().create(this, DaggerCoreComponent.create())
+    component = DaggerSingletonComponent.factory().create(this, DaggerCoreComponent.create())
   }
+
+  override fun newImageLoader() = component.imageLoader
 }
