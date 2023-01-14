@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-  implementation(Deps.kotlin.stdlib.jdk8)
-  testImplementation(Deps.kotlin.test)
+  implementation(libs.kotlin.stdlib)
+  testImplementation(libs.kotlin.test)
 }
 
 tasks.test {

@@ -4,12 +4,12 @@ plugins {
 
 dependencies {
   implementation(projects.statemachine)
-  implementation(Deps.kotlin.stdlib.jdk8)
-  implementation(Deps.kotlinx.coroutines.core)
+  implementation(libs.kotlin.stdlib)
+  implementation(libs.kotlinx.coroutines.core)
 }
 
 dependencies {
-  implementation(Deps.kotlin.test)
-  implementation(Deps.kotlinx.coroutines.test)
-  implementation(Deps.junit)
+  implementation(libs.kotlin.test)
+  implementation(libs.kotlinx.coroutines.test)
+  implementation(libs.junit)
 }

@@ -1,7 +1,6 @@
-@file:Suppress("NOTHING_TO_INLINE", "DEPRECATION")
-
 package dev.efemoney.lexiko.statemachine
 
+import app.cash.turbine.test
 import dev.efemoney.lexiko.statemachine.NarcHeroEvent.DistressCall
 import dev.efemoney.lexiko.statemachine.NarcHeroEvent.WakeUp
 import dev.efemoney.lexiko.statemachine.NarcHeroEvent.WorkOut
@@ -37,6 +36,10 @@ class NarcolepticSuperheroTest {
         onEnter { changeIntoSecretCostume() }
         onExit { updateJournal() }
       }
+    }
+
+    batman.state.test {
+
     }
   }
 

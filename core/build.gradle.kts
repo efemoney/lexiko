@@ -9,28 +9,28 @@ android.namespace = "dev.efemoney.lexiko"
 dependencies {
   implementation(projects.engine)
 
-  implementation(Deps.kotlin.stdlib.jdk8)
-  implementation(Deps.kotlinx.coroutines.core)
-  implementation(Deps.kotlinx.coroutines.android)
+  implementation(libs.kotlin.stdlib)
+  implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.kotlinx.coroutines.android)
 
-  implementation(Deps.dagger)
-  kapt(Deps.dagger.compiler)
+  implementation(libs.dagger)
+  kapt(libs.dagger.compiler)
 
-  api(Deps.ktor.client)
-  api(Deps.ktor.client.okHttp)
+  api(libs.ktor.client)
+  api(libs.ktor.client.okHttp)
 
-  implementation(Deps.okio)
-  implementation(Deps.okHttp)
-  implementation(Deps.okHttp.logging)
+  implementation(libs.okio)
+  implementation(libs.okHttp)
+  implementation(libs.okHttp.logging)
 
-  implementation(Deps.uuid)
+  implementation(libs.uuid)
 
-  implementation(Deps.androidx.navigation.runtime)
+  implementation(libs.androidx.navigation.runtime)
 }
 
 dependencies {
-  testImplementation(Deps.kotlin.test)
-  testImplementation(Deps.kotlinx.coroutines.test)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.kotlinx.coroutines.test)
 
-  testImplementation(Deps.junit)
+  testImplementation(libs.junit)
 }

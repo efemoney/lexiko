@@ -16,9 +16,6 @@ interface TransitionReturnScope<SpecificStateT : StateT, SpecificEventT : EventT
   @StateMachineDsl
   fun <T : StateT> transition(to: T): Return<T> = ReturnT(to)
 
-//  @StateMachineDsl
-//  fun <T : StateT> transition(to: T): Return<T> = ReturnT(to)
-
   @StateMachineDsl
   fun noTransition(): Return<Nothing> = ReturnNothing
 }

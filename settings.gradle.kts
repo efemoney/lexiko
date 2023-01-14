@@ -28,10 +28,10 @@ dependencyResolutionManagement {
   repositories {
     mavenCentral()
     google()
-  }
-  versionCatalogs {
-    register("Deps") {
-      from(fileTree("gradle/libs.versions.toml"))
+    maven("https://androidx.dev/storage/compose-compiler/repository/") {
+      content {
+        includeModule("androidx.compose.compiler", "compiler")
+      }
     }
   }
 }

@@ -3,13 +3,13 @@ plugins {
 }
 
 dependencies {
-  implementation(Deps.kotlin.stdlib.jdk8)
-  implementation(Deps.kotlinx.coroutines.core)
+  implementation(libs.kotlin.stdlib)
+  implementation(libs.kotlinx.coroutines.core)
 
-  testImplementation(Deps.turbine)
-  testImplementation(Deps.kotlin.test)
-  testImplementation(Deps.kotlinx.datetime)
-  testImplementation(Deps.kotlinx.coroutines.test)
+  testImplementation(libs.turbine)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.kotlinx.datetime)
+  testImplementation(libs.kotlinx.coroutines.test)
 }
 
 tasks.test {

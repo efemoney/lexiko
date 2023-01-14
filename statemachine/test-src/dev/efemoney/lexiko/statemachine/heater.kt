@@ -1,5 +1,3 @@
-@file:Suppress("CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION")
-
 package dev.efemoney.lexiko.statemachine
 
 import dev.efemoney.lexiko.statemachine.dsl.StateMachine
@@ -38,7 +36,7 @@ class HeaterTest {
       }
     }
 
-    val stateMachine = StateMachine {
+    val stateMachine = StateMachine<HeaterState, HeaterEvent> {
 
       nestedState(child)
 

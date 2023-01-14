@@ -13,13 +13,13 @@ import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-  alias(Deps.plugins.android.application) apply false
-  alias(Deps.plugins.android.library) apply false
-  alias(Deps.plugins.kotlin.android) apply false
-  alias(Deps.plugins.kotlin.jvm) apply false
-  alias(Deps.plugins.kotlin.noarg) apply false
-  alias(Deps.plugins.kotlin.kapt) apply false
-  id("com.github.ben-manes.versions") version "0.42.0"
+  alias(libs.plugins.android.application) apply false
+  alias(libs.plugins.android.library) apply false
+  alias(libs.plugins.kotlin.android) apply false
+  alias(libs.plugins.kotlin.jvm) apply false
+  alias(libs.plugins.kotlin.noarg) apply false
+  alias(libs.plugins.kotlin.kapt) apply false
+  id("com.github.ben-manes.versions") version "0.44.0"
 }
 
 subprojects {
@@ -39,15 +39,15 @@ fun Project.AllTheBoms() {
 
     dependencies {
       pluginManager.withAnyKotlinPlugin {
-        implementation(platform(Deps.ktor.bom))
-        implementation(platform(Deps.kotlin.bom))
-        implementation(platform(Deps.kotlinx.coroutines.bom))
-        implementation(platform(Deps.kotlinx.serialization.bom))
+        implementation(platform(libs.ktor.bom))
+        implementation(platform(libs.kotlin.bom))
+        implementation(platform(libs.kotlinx.coroutines.bom))
+        implementation(platform(libs.kotlinx.serialization.bom))
       }
 
       pluginManager.withAnyAndroidPlugin {
-        implementation(platform(Deps.okio.bom))
-        implementation(platform(Deps.okHttp.bom))
+        implementation(platform(libs.okio.bom))
+        implementation(platform(libs.okHttp.bom))
       }
     }
   }
@@ -80,7 +80,7 @@ fun Project.AndroidConvention() {
     }
     androidComponents.finalizeDsl {
       if (it.buildFeatures.compose == true) it.composeOptions {
-        kotlinCompilerExtensionVersion = Deps.versions.androidx.compose.compiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
       }
     }
   }

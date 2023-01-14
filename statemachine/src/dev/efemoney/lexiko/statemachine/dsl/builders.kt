@@ -25,7 +25,7 @@ inline fun <
 @StateMachineDsl
 inline fun <
   reified StateT : Any,
-  reified EventT : Any
+  reified EventT : Any,
   > StateMachine(
   initialState: Any? = null,
   coroutineContext: CoroutineContext = EmptyCoroutineContext,
