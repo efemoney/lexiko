@@ -1,5 +1,3 @@
-@file:Suppress("FunctionName")
-
 package dev.efemoney.lexiko.engine.internal
 
 internal interface Array2d<T> {
@@ -11,9 +9,6 @@ internal interface Array2d<T> {
 internal interface MutableArray2d<T> : Array2d<T> {
   operator fun set(row: Int, col: Int, value: T)
 }
-
-internal fun <T> Array2d(rows: Int, cols: Int, initializer: (Int, Int) -> T): Array2d<T> =
-  MutableArray2d(rows, cols, initializer).asArray2d()
 
 internal fun <T> MutableArray2d(rows: Int, cols: Int, initializer: (Int, Int) -> T): MutableArray2d<T> =
   FlatArrayAs2d(rows, cols, initializer)

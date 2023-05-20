@@ -8,15 +8,14 @@ import dev.efemoney.lexiko.statemachine.dsl.TransitionGuard
 import dev.efemoney.lexiko.statemachine.internal.GuardedTransition
 import dev.efemoney.lexiko.statemachine.internal.StateDefinition
 import dev.efemoney.lexiko.statemachine.internal.StateMachineImpl
-import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
 
 @StateMachineDsl
-class StateMachineBuilder<StateT : Any, EventT : Any>(
-  private val coroutineScope: CoroutineScope,
+class StateMachineBuilder<StateT : Any, EventT : Any> internal constructor(
   private val baseType: KClass<StateT>,
-  private var initialState: StateT? = null,
+  initialState: StateT? = null,
 ) {
+  private var computeInitialState = { initialState }
   private val enterAnyActions = mutableListOf<Action<StateT, StateT, EventT>>()
   private val exitAnyActions = mutableListOf<Action<StateT, StateT, EventT>>()
   private val anyTransitions =
@@ -26,7 +25,15 @@ class StateMachineBuilder<StateT : Any, EventT : Any>(
 
   @StateMachineDsl
   fun <T : StateT> initialState(state: T) {
-    initialState = state
+    computeInitialState = { state }
+  }
+
+  @StateMachineDsl
+  inline fun <reified T : StateT> initialState() = initialNestedState(T::class)
+
+  @PublishedApi
+  internal fun <T : StateT> initialNestedState(type: KClass<T>) {
+    computeInitialState = { definitions[type]?.nested?.state?.value }
   }
 
   @StateMachineDsl
@@ -52,7 +59,7 @@ class StateMachineBuilder<StateT : Any, EventT : Any>(
     guard: TransitionGuard<StateT, T, StateT, EventT>,
     transition: Transition<StateT, T, StateT, EventT>,
   ) {
-    state(baseType) {
+    state(baseType, null) {
       on(eventType, guard, transition)
     }
   }
@@ -60,53 +67,40 @@ class StateMachineBuilder<StateT : Any, EventT : Any>(
   // region State DSL
   @StateMachineDsl
   inline fun <reified T : StateT> state(noinline builder: StateBuilder<T, StateT, EventT>.() -> Unit) =
-    state(T::class, builder)
+    state(T::class, null, builder)
+
+  @StateMachineDsl
+  inline fun <reified T : StateT> state(
+    nested: StateMachine<T, EventT>,
+    noinline builder: StateBuilder<T, StateT, EventT>.() -> Unit
+  ) = state(T::class, nested as StateMachineImpl<StateT, EventT>, builder)
 
   @PublishedApi
-  internal fun <T : StateT> state(type: KClass<T>, builder: StateBuilder<T, StateT, EventT>.() -> Unit) {
+  internal fun <T : StateT> state(
+    type: KClass<T>,
+    nested: StateMachineImpl<StateT, EventT>?,
+    builder: StateBuilder<T, StateT, EventT>.() -> Unit
+  ) {
     if (type in definitions) definitionError("State definition for $type already exists")
 
-    definitions[type] = StateBuilder<T, StateT, EventT>(enterAnyActions, exitAnyActions)
+    definitions[type] = StateBuilder<T, StateT, EventT>(enterAnyActions, exitAnyActions, nested)
       .apply(builder)
       .build() as StateDefinition<StateT, StateT, EventT>
   }
   // endregion
 
-  // region Nested State DSL
-  @StateMachineDsl
-  inline fun <reified T : StateT, E : EventT> nestedState(
-    @BuilderInference noinline builder: StateMachineBuilder<T, E>.() -> Unit
-  ) = nestedState(T::class, builder)
-
   @PublishedApi
-  internal fun <T : StateT, E : EventT> nestedState(
-    type: KClass<T>,
-    builder: StateMachineBuilder<T, E>.() -> Unit
-  ) = nestedState(type, StateMachineBuilder<T, E>(coroutineScope, type).apply(builder).build())
-
-  @StateMachineDsl
-  inline fun <reified T : StateT, E : EventT> nestedState(machine: StateMachine<T, E>) =
-    nestedState(T::class, machine)
-
-  @PublishedApi
-  internal fun <T : StateT, E : EventT> nestedState(type: KClass<T>, machine: StateMachine<T, E>) {
-
-  }
-  // endregion
-
-  @PublishedApi
-  internal fun build(): StateMachine<StateT, EventT> =
-    StateMachineImpl(
-      initialState = checkNotNull(initialState) { "Cannot create a StateMachine without an initial state" },
-      coroutineScope = coroutineScope,
-      definitions = definitions.toMap(),
-    )
+  internal fun build() = StateMachineImpl(
+    initialState = checkNotNull(computeInitialState()) { "Cannot create a StateMachine without an initial state" },
+    definitions = definitions.toMap(),
+  )
 }
 
 @StateMachineDsl
-class StateBuilder<SpecificStateT : StateT, StateT : Any, EventT : Any>(
+class StateBuilder<SpecificStateT : StateT, StateT : Any, EventT : Any> internal constructor(
   private val enterAnyActions: MutableList<Action<StateT, StateT, EventT>>,
   private val exitAnyActions: MutableList<Action<StateT, StateT, EventT>>,
+  private val nested: StateMachineImpl<StateT, EventT>? = null,
 ) {
   private val enterActions = mutableListOf<Action<SpecificStateT, StateT, EventT>>()
   private val exitActions = mutableListOf<Action<SpecificStateT, StateT, EventT>>()
@@ -142,7 +136,7 @@ class StateBuilder<SpecificStateT : StateT, StateT : Any, EventT : Any>(
   }
 
   internal fun build() =
-    StateDefinition(enterAnyActions, exitAnyActions, enterActions, exitActions, transitions.toMap())
+    StateDefinition(enterAnyActions, exitAnyActions, enterActions, exitActions, transitions.toMap(), nested)
 }
 
 private fun definitionError(message: String, cause: Throwable? = null): Nothing =

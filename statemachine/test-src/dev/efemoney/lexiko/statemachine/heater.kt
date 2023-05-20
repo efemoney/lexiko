@@ -1,5 +1,6 @@
 package dev.efemoney.lexiko.statemachine
 
+import app.cash.turbine.test
 import dev.efemoney.lexiko.statemachine.dsl.StateMachine
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
@@ -12,15 +13,7 @@ class HeaterTest {
   @Test @Disabled
   fun test() = runTest {
 
-    val child = StateMachine {
-
-      initialState(HeaterRunning)
-
-      state<HeaterOn> {
-        on<TurnOff> {
-          transition(TODO())
-        }
-      }
+    val heaterOnMachine = StateMachine(HeaterRunning) {
 
       state<HeaterRunning> {
         on<Sleep> {
@@ -33,33 +26,45 @@ class HeaterTest {
           delay(state.duration)
           emit(Wake)
         }
-      }
-    }
-
-    val stateMachine = StateMachine<HeaterState, HeaterEvent> {
-
-      nestedState(child)
-
-      state<HeaterOff> {
-        on<TurnOn> {
-          transition(TODO())
+        on<Wake> {
+          transition(HeaterRunning)
         }
       }
     }
 
-    stateMachine
+    val stateMachine = StateMachine(HeaterOff) {
+
+      initialState<HeaterOn>()
+
+      state<HeaterOn>(heaterOnMachine) {
+        on<TurnOff> {
+          noTransition()
+        }
+      }
+
+      state<HeaterOff> {
+        on<TurnOn> {
+          noTransition()
+        }
+      }
+    }
+
+    stateMachine.state.test {
+
+    }
   }
 }
 
 private sealed interface HeaterState
-private interface HeaterOff : HeaterState
+private data object HeaterOff : HeaterState
+
 private sealed interface HeaterOn : HeaterState
-private object HeaterRunning : HeaterOn
+private data object HeaterRunning : HeaterOn
 private data class HeaterSleeping(val duration: Duration = Duration.INFINITE) : HeaterOn
 
 
 private sealed interface HeaterEvent
-private object TurnOn : HeaterEvent
-private object TurnOff : HeaterEvent
+private data object TurnOn : HeaterEvent
+private data object TurnOff : HeaterEvent
 private data class Sleep(val duration: Duration) : HeaterEvent
-private object Wake : HeaterEvent
+private data object Wake : HeaterEvent

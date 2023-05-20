@@ -49,11 +49,11 @@ class NarcolepticSuperheroTest {
 }
 
 sealed interface NarcHeroState {
-  object Asleep : NarcHeroState
-  object HangingOut : NarcHeroState
-  object Hungry : NarcHeroState
-  object Sweaty : NarcHeroState
-  object SavingTheWorld : NarcHeroState
+  data object Asleep : NarcHeroState
+  data object HangingOut : NarcHeroState
+  data object Hungry : NarcHeroState
+  data object Sweaty : NarcHeroState
+  data object SavingTheWorld : NarcHeroState
 }
 
 enum class NarcHeroEvent {

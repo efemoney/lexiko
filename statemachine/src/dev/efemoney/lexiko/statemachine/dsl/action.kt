@@ -11,5 +11,4 @@ interface ActionScope<out SpecificStateT : StateT, StateT : Any, in EventT : Any
   fun emit(event: EventT)
 }
 
-internal typealias Action<State, StateT, EventT> =
-  suspend ActionScope<State, StateT, EventT>.() -> Unit
+internal typealias Action<State, StateT, EventT> = suspend ActionScope<State, StateT, EventT>.() -> Unit

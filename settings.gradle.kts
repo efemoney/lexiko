@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+import org.gradle.kotlin.dsl.support.serviceOf
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -11,15 +13,17 @@ pluginManagement {
 }
 
 plugins {
-  `gradle-enterprise`
+  id("com.gradle.enterprise") version "3.13.2"
 }
 
 gradleEnterprise {
   buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
     termsOfServiceAgree = "yes"
+
+    val exec = serviceOf<ExecOperations>() // Necessary for configuration cache
     buildScanPublished {
-      exec { commandLine("open", buildScanUri) }
+      exec.exec { commandLine("open", buildScanUri) }
     }
   }
 }
@@ -43,3 +47,5 @@ include("server")
 include("engine")
 include("core")
 include("app")
+
+rootProject.name = "lexiko"

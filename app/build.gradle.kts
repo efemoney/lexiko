@@ -1,9 +1,7 @@
-@file:Suppress("UnstableApiUsage")
-
 plugins {
-  id("com.android.application")
-  kotlin("android")
-  kotlin("kapt")
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -29,9 +27,9 @@ dependencies {
   implementation(libs.androidx.compose.ui)
   implementation(libs.androidx.compose.ui.tooling)
   implementation(libs.androidx.compose.material)
-  // implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.compose.material3)
   implementation(libs.androidx.compose.material.icons)
-  implementation(libs.androidx.compose.material.moarIcons)
+  implementation(libs.androidx.compose.material.icons.extended)
 
   implementation(libs.coil)
   implementation(libs.coil.compose)

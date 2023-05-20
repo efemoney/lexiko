@@ -1,9 +1,9 @@
-@file:Suppress("NOTHING_TO_INLINE", "DEPRECATION")
-
 package dev.efemoney.lexiko.statemachine
 
 import app.cash.turbine.test
-import dev.efemoney.lexiko.statemachine.TrafficLight.*
+import dev.efemoney.lexiko.statemachine.TrafficLight.Green
+import dev.efemoney.lexiko.statemachine.TrafficLight.Red
+import dev.efemoney.lexiko.statemachine.TrafficLight.Yellow
 import dev.efemoney.lexiko.statemachine.dsl.StateMachine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -79,9 +79,9 @@ class TrafficLightConfiguration(val red: Duration, val yellow: Duration, val gre
 }
 
 sealed interface TrafficLight {
-  object Red : TrafficLight
-  object Yellow : TrafficLight
-  object Green : TrafficLight
+  data object Red : TrafficLight
+  data object Yellow : TrafficLight
+  data object Green : TrafficLight
 }
 
 typealias Next = Unit

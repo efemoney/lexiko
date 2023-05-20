@@ -1,5 +1,6 @@
 package dev.efemoney.lexiko.statemachine.dsl
 
+import dev.efemoney.lexiko.statemachine.StateMachine
 import kotlinx.coroutines.CoroutineScope
 
 @StateMachineDsl
@@ -17,12 +18,17 @@ interface TransitionReturnScope<SpecificStateT : StateT, SpecificEventT : EventT
   fun <T : StateT> transition(to: T): Return<T> = ReturnT(to)
 
   @StateMachineDsl
+  fun <T : StateT> transition(machine: StateMachine<T, EventT>): Return<T> = ReturnMachine(machine)
+
+  @StateMachineDsl
   fun noTransition(): Return<Nothing> = ReturnNothing
 }
 
 sealed interface Return<out T>
 
 internal class ReturnT<T>(val state: T) : Return<T>
+
+internal class ReturnMachine<T : Any>(val stateMachine: StateMachine<T, *>) : Return<T>
 
 internal object ReturnNothing : Return<Nothing>
 

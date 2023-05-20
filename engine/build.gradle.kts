@@ -1,15 +1,17 @@
 plugins {
-  kotlin("jvm")
+  alias(libs.plugins.kotlin.jvm)
 }
 
 dependencies {
-  implementation(projects.statemachine)
+  kotlinCompilerPluginClasspath(libs.androidx.compose.compiler)
+
   implementation(libs.kotlin.stdlib)
+  implementation(libs.kotlinx.immutable)
   implementation(libs.kotlinx.coroutines.core)
-}
+  implementation(libs.jetbrains.compose.runtime)
+  implementation(libs.molecule.runtime)
 
-dependencies {
-  implementation(libs.kotlin.test)
-  implementation(libs.kotlinx.coroutines.test)
-  implementation(libs.junit)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation(libs.junit)
 }

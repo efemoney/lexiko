@@ -1,13 +1,18 @@
 plugins {
   application
-  kotlin("jvm")
-  kotlin("kapt")
-  kotlin("plugin.noarg")
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.kapt)
+  alias(libs.plugins.kotlin.noarg)
+  alias(libs.plugins.ksp)
 }
 
-application.mainClass.set("io.ktor.server.netty.EngineMain")
+application {
+  mainClass = "io.ktor.server.netty.EngineMain"
+}
 
-noArg.annotation("dev.efemoney.lexiko.NoArgConstructor")
+noArg {
+  annotation("dev.efemoney.lexiko.NoArgConstructor")
+}
 
 dependencies {
   implementation(libs.kotlin.stdlib)
@@ -19,7 +24,7 @@ dependencies {
 
   implementation(libs.moshi)
   implementation(libs.moshi.lazyAdapters)
-  kapt(libs.moshi.codegen)
+  ksp(libs.moshi.codegen)
 
   implementation(libs.ktor.server)
   implementation(libs.ktor.server.netty)
