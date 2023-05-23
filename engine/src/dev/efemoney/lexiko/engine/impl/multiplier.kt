@@ -1,14 +1,11 @@
 package dev.efemoney.lexiko.engine.impl
 
+import dev.efemoney.lexiko.engine.api.Letter
 import dev.efemoney.lexiko.engine.api.TilePosition
+import dev.efemoney.lexiko.engine.api.Word
 
 internal sealed interface Multiplier {
-
   fun TilePosition.hasThisMultiplier(): Boolean
-
-  data object None : Multiplier {
-    override fun TilePosition.hasThisMultiplier() = false
-  }
 }
 
 internal abstract class LetterMultiplier(private val factor: Float) : Multiplier {

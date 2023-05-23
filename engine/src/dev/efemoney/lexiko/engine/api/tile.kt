@@ -7,7 +7,7 @@ import dev.efemoney.lexiko.engine.impl.TripleLetterMultiplier
 import dev.efemoney.lexiko.engine.impl.TripleWordMultiplier
 import dev.efemoney.lexiko.engine.impl.hasMultiplier
 
-data class Tile(
+data class Tile internal constructor(
   val char: TileChar,
   val point: TilePoint,
 ) : Comparable<Tile> {
@@ -44,12 +44,11 @@ enum class TileMultiplier(internal val value: Multiplier) {
   TripleLetter(TripleLetterMultiplier),
   DoubleWord(DoubleWordMultiplier),
   DoubleLetter(DoubleLetterMultiplier),
-  None(Multiplier.None),
   ;
 
   internal companion object {
     fun forPosition(position: TilePosition) =
-      TileMultiplier.entries.first { position.hasMultiplier(it.value) }
+      TileMultiplier.entries.firstOrNull { position.hasMultiplier(it.value) }
   }
 }
 

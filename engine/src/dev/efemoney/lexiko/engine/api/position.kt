@@ -27,18 +27,19 @@ value class TilePosition private constructor(private val packed: Long) {
   inline operator fun component2() = col
 
   internal inline fun next(direction: Direction) = when (direction) {
-    Direction.Horizontal -> TilePosition((row + 1).coerceAtMost(MaxIndex), col)
-    Direction.Vertical -> TilePosition(row, (col + 1).coerceAtMost(MaxIndex))
+    Direction.Vertical -> TilePosition((row + 1).coerceAtMost(MaxIndex), col)
+    Direction.Horizontal -> TilePosition(row, (col + 1).coerceAtMost(MaxIndex))
   }
 
   internal inline fun prev(direction: Direction) = when (direction) {
-    Direction.Horizontal -> TilePosition((row - 1).coerceAtLeast(MinIndex), col)
-    Direction.Vertical -> TilePosition(row, (col - 1).coerceAtLeast(MinIndex))
+    Direction.Vertical -> TilePosition((row - 1).coerceAtLeast(MinIndex), col)
+    Direction.Horizontal -> TilePosition(row, (col - 1).coerceAtLeast(MinIndex))
   }
 
   companion object {
     const val MinIndex = 0
     const val MaxIndex = 14
     internal val Range = MinIndex..MaxIndex
+    internal val Center = TilePosition(7, 7)
   }
 }

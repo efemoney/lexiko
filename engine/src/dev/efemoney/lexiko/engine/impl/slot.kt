@@ -7,11 +7,10 @@ import dev.efemoney.lexiko.engine.api.MutableTileSlot
 import dev.efemoney.lexiko.engine.api.Tile
 import dev.efemoney.lexiko.engine.api.TileMultiplier
 import dev.efemoney.lexiko.engine.api.TilePosition
-import dev.efemoney.lexiko.engine.internal.Array2d
 
 internal class TileSlots(
-  override val rows: Int,
-  override val cols: Int,
+  val rows: Int,
+  val cols: Int,
   initSlot: (position: TilePosition) -> TileSlot,
 ) : Array2d<TileSlot>, Iterable<TileSlot> {
 
@@ -19,15 +18,20 @@ internal class TileSlots(
     check(rows > 0)
     check(cols > 0)
     Array(rows * cols) {
-      initSlot(TilePosition(row = it / rows, col = it % rows))
+      initSlot(
+        TilePosition(
+          row = it / rows,
+          col = it % rows
+        )
+      )
     }
   }
 
-  override fun get(row: Int, col: Int) = array[checkRowAndCol(row, col)]
+  override fun get(row: Int, col: Int) = array[checkIndex(row, col)]
 
   override fun iterator() = array.iterator()
 
-  private fun checkRowAndCol(row: Int, col: Int): Int {
+  private fun checkIndex(row: Int, col: Int): Int {
     check(row in 0 until rows)
     check(col in 0 until cols)
     return row * cols + col
@@ -36,10 +40,17 @@ internal class TileSlots(
 
 internal class TileSlot(
   override val position: TilePosition,
-  override val multiplier: TileMultiplier,
+  override val multiplier: TileMultiplier?,
+  initialTile: Tile? = null,
 ) : MutableTileSlot {
 
-  override var tile by mutableStateOf<Tile?>(null)
+  override var tile by mutableStateOf(initialTile)
+
+  context(BoardImpl)
+  internal fun next(direction: Direction) = get(position.next(direction))
+
+  context(BoardImpl)
+  internal fun prev(direction: Direction) = get(position.prev(direction))
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -51,3 +62,7 @@ internal class TileSlot(
 }
 
 internal enum class Direction { Horizontal, Vertical }
+
+internal interface Array2d<T> {
+  operator fun get(row: Int, col: Int): T
+}

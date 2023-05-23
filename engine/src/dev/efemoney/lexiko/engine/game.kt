@@ -1,51 +1,60 @@
 package dev.efemoney.lexiko.engine
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import dev.efemoney.lexiko.engine.api.Board
 import dev.efemoney.lexiko.engine.api.PlayerName
+import dev.efemoney.lexiko.engine.handle.GameEventHandlers
+import dev.efemoney.lexiko.engine.impl.BagOfTilesImpl
 import dev.efemoney.lexiko.engine.impl.BoardImpl
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Inject
 
-class Lexiko {
+internal class GameContext(
+  private val scope: CoroutineScope,
+  private val events: Channel<GameEvent>,
+  val bag: BagOfTilesImpl,
+  val board: BoardImpl,
+) {
+  fun send(event: GameEvent) {
+    scope.launch { events.send(event) }
+  }
+}
 
-  @Composable fun present(events: MutableSharedFlow<GameEvent>): Game {
+@Inject
+class Game internal constructor(
+  private val handlers: GameEventHandlers,
+) {
+
+  @Composable fun present(events: Channel<GameEvent>): GameState {
     val scope = rememberCoroutineScope()
-    val context = remember(scope, events) { GameContext(scope, events, BoardImpl()) }
-
+    val context = remember(scope, events) {
+      GameContext(scope, events, BagOfTilesImpl(), BoardImpl())
+    }
     with(context) {
-      return Game(
-        board = board,
-        players = players(),
-      )
+      LaunchedEffect(context, events) {
+        for (event in events) handlers.handle(event)
+      }
+      return GameState(players(), board())
     }
   }
 
   context(GameContext)
-  @Composable fun board(): Board {
+  @Composable private fun board(): Board {
     return board
   }
 
   context(GameContext)
-  @Composable fun players(): Game.Players {
-    TODO()
+  @Composable private fun players(): GameState.Players {
+    return remember { GameState.Players(emptyList()) }
   }
 }
 
-internal class GameContext(
-  private val scope: CoroutineScope,
-  private val events: MutableSharedFlow<GameEvent>,
-  val board: BoardImpl,
-) {
-  fun send(event: GameEvent) {
-    scope.launch { events.emit(event) }
-  }
-}
-
-data class Game(
+data class GameState(
   val players: Players,
   val board: Board,
 ) {
@@ -59,6 +68,8 @@ data class Game(
   )
 }
 
-sealed interface GameEvent {
-  data object On : GameEvent
-}
+sealed interface GameEvent
+
+data object StartGameEvent : GameEvent
+
+

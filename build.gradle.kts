@@ -144,6 +144,8 @@ fun Project.KotlinConvention() {
         enableLanguageFeature("ValueClasses")
         enableLanguageFeature("ContextReceivers")
         enableLanguageFeature("DefinitelyNonNullableTypes")
+        enableLanguageFeature("BreakContinueInInlineLambdas")
+        enableLanguageFeature("UnitConversionsOnArbitraryExpressions")
         enableLanguageFeature("PackagePrivateFileClassesWithAllPrivateMembers") // KT-10884
 
         optIn("kotlin.RequiresOptIn")
