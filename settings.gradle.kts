@@ -17,6 +17,7 @@ pluginManagement {
 
 plugins {
   id("com.gradle.enterprise") version "3.13.2"
+  id("org.gradle.toolchains.foojay-resolver-convention") version "0.7.0"
 }
 
 gradleEnterprise {
@@ -36,9 +37,7 @@ dependencyResolutionManagement {
     mavenCentral()
     google()
     maven("https://androidx.dev/storage/compose-compiler/repository/") {
-      content {
-        includeModule("androidx.compose.compiler", "compiler")
-      }
+      content { includeModule("androidx.compose.compiler", "compiler") }
     }
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
       mavenContent { snapshotsOnly() }
@@ -49,6 +48,11 @@ dependencyResolutionManagement {
 include("dubbed:compiler-plugin")
 include("dubbed:gradle-plugin")
 include("statemachine")
+include("libs:di:scopes")
+include("libs:di:codegen")
+include("libs:navigation")
+include("libs:ui")
+include("ui:board")
 include("server")
 include("engine")
 include("core")

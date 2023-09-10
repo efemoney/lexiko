@@ -1,21 +1,27 @@
 package dev.efemoney.lexiko.engine.impl
 
-import dev.efemoney.lexiko.engine.api.MutableBoard
+import dev.efemoney.lexiko.engine.api.BoardInternal
+import dev.efemoney.lexiko.engine.api.Direction
+import dev.efemoney.lexiko.engine.api.OnConflict
 import dev.efemoney.lexiko.engine.api.Tile
 import dev.efemoney.lexiko.engine.api.TileMultiplier
+import dev.efemoney.lexiko.engine.api.TilePlacement
 import dev.efemoney.lexiko.engine.api.TilePosition
-import dev.efemoney.lexiko.engine.api.Word
-import dev.efemoney.lexiko.engine.api.WordDirection
+import dev.efemoney.lexiko.engine.api.component1
+import dev.efemoney.lexiko.engine.api.component2
+import dev.efemoney.lexiko.engine.api.component3
+import dev.efemoney.lexiko.engine.api.positions
 
 internal class BoardImpl(
-  initialTilePlacement: TilePlacement = TilePlacement.None,
-) : MutableBoard {
+  private val initialTilePlacement: TilePlacement = TilePlacement.None,
+  private val onConflict: OnConflict = OnConflict.DoNothing,
+) : BoardInternal {
 
-  private val slots = TileSlots(rows = 15, cols = 15) { position ->
+  private val slots = TileSlots(15, 15) { position ->
     TileSlot(
       position = position,
       multiplier = TileMultiplier.forPosition(position),
-      initialTile = initialTilePlacement.tiles[position],
+      initialTile = initialTilePlacement[position],
     )
   }
 
@@ -23,43 +29,29 @@ internal class BoardImpl(
 
   override fun get(position: TilePosition) = get(position.row, position.col)
 
-  override fun place(word: Word, startAt: TilePosition, inDirection: WordDirection) {
-    word.asSequence()
-      .zip(generateSequence(get(startAt)) { it.next(inDirection.dir) })
-      .forEach { (tile, slot) ->
-        slot.tile = tile
-      }
+  override fun place(tile: Tile, at: TilePosition) {
+    get(at).put(tile, onConflict)
+  }
+
+  override fun place(tiles: List<Tile>, startAt: TilePosition, direction: Direction) {
+    tiles.asSequence()
+      .zip(slots(from = startAt, direction))
+      .forEach { (tile, slot) -> slot.put(tile, onConflict) }
   }
 
   override fun toString() = buildString {
-    appendLine("Board(")
-    for (row in 0..<slots.rows) {
-      for (col in 0..<slots.cols) {
-        slots[row, col].tile.run {
-          append(if (this == null) '.' else char.value)
-        }
-        append(' ')
-      }
-      appendLine()
+    var oldRow = -1
+    append("Board(")
+    for ((pos, _, tile) in slots) {
+      val row = pos.row
+      if (oldRow != row) appendLine()
+      append(tile?.char?.value ?: '.')
+      oldRow = row
     }
     append(')')
   }
-}
 
-@JvmInline
-value class TilePlacement private constructor(internal val tiles: Map<TilePosition, Tile>) {
+  private fun slots(from: TilePosition, to: TilePosition) = positions(from, to).map(::get)
 
-  constructor(build: Builder.() -> Unit) : this(buildMap { Builder(this).apply(build) })
-
-  @JvmInline
-  value class Builder internal constructor(
-    private val map: MutableMap<TilePosition, Tile>
-  ) : MutableMap<TilePosition, Tile> by map {
-
-    infix fun Tile.at(position: TilePosition) = map.put(position, this)
-  }
-
-  companion object {
-    val None = TilePlacement(emptyMap())
-  }
+  private fun slots(from: TilePosition, inDirection: Direction) = positions(from, inDirection).map(::get)
 }

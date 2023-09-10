@@ -1,45 +1,44 @@
 [versions]
-agp = "8.2.0-alpha04"
+agp = "8.3.0-alpha03"
 desugar = "2.0.3"
-accompanist = "0.31.2-alpha"
-androidx-core = "1.12.0-alpha04"
-androidx-compose = "1.5.0-alpha04"
-androidx-compose-compiler = "1.4.7"
-androidx-compose-material3 = "1.2.0-alpha01"
-androidx-activity = "1.8.0-alpha04"
-androidx-activity-compose = "1.8.0-alpha04"
-androidx-appcompat = "1.7.0-alpha02"
+accompanist = "0.33.1-alpha"
+androidx-core = "1.12.0"
+androidx-compose = "1.6.0-alpha05"
+androidx-compose-compiler = "1.5.3"
+androidx-compose-material3 = "1.2.0-alpha07"
+androidx-activity = "1.8.0-beta01"
+androidx-appcompat = "1.7.0-alpha03"
 androidx-datastore = "1.0.0"
-androidx-fragment = "1.6.0-rc01"
+androidx-fragment = "1.7.0-alpha04"
 androidx-lifecycle = "2.2.0"
-androidx-navigation = "2.6.0-rc01"
-androidx-preference = "1.2.0"
-androidx-recyclerview = "1.3.0"
+androidx-navigation = "2.7.2"
+androidx-preference = "1.2.1"
+androidx-recyclerview = "1.3.1"
 
 jvm = "17"
 jvmTarget = "11"
 
-kotlin = "1.8.21"
-ksp = "1.8.21-1.0.11"
-kotlinInject = "0.6.1"
-jetbrains-compose = "1.4.0"
-jetbrains-compose-compiler = "1.4.5"
-datetime = "0.4.0"
-coroutines = "1.7.1"
+kotlin = "1.9.20-Beta"
+ksp = "1.9.10-1.0.13"
+kotlinInject = "0.6.3"
+jetbrains-compose = "1.5.1"
+jetbrains-compose-compiler = "1.5.1"
+datetime = "0.4.1"
+coroutines = "1.7.3"
 compileTesting = "1.5.0"
-serialization = "1.5.1"
-kotlinpoet = "1.13.2"
+serialization = "1.6.0"
+kotlinpoet = "1.14.2"
 immutableCollections = "0.3.5"
-ktor = "2.3.0"
-coil = "2.3.0"
-molecule = "0.9.0"
-anvil = "2.4.6-SNAPSHOT"
+ktor = "2.3.4"
+coil = "2.4.0"
+molecule = "1.2.0"
+anvil = "2.4.8"
 moshi = "1.15.0"
-moshix = "0.22.1"
-okio = "3.3.0"
+moshix = "0.24.3"
+okio = "3.5.0"
 okhttp = "5.0.0-alpha.11"
 retrofit = "2.9.0"
-dagger = "2.46.1"
+dagger = "2.48"
 glide = "4.15.0"
 material = "1.9.0"
 timber = "5.0.1"
@@ -62,13 +61,14 @@ androidx-preference = { module = "androidx.preference:preference-ktx", version.r
 androidx-recyclerView = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
 
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 
 androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "androidx-compose" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
+androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidx-compose" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose" }
 androidx-compose-material-icons = { module = "androidx.compose.material:material-icons-core", version.ref = "androidx-compose" }
@@ -157,12 +157,12 @@ anvil-compiler-api = { module = "com.squareup.anvil:compiler-api", version.ref =
 anvil-compiler-utils = { module = "com.squareup.anvil:compiler-utils", version.ref = "anvil" }
 
 jsr250 = "javax.annotation:jsr250-api:1.0"
-turbine = "app.cash.turbine:turbine:0.13.0"
+turbine = "app.cash.turbine:turbine:1.0.0"
 junit = "junit:junit:4.13.2"
-uuid = "com.benasher44:uuid:0.7.0"
+uuid = "com.benasher44:uuid:0.8.1"
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
-firebase-admin = "com.google.firebase:firebase-admin:9.1.1"
+firebase-admin = "com.google.firebase:firebase-admin:9.2.0"
 
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-bom = { module = "com.squareup.okio:okio-bom", version.ref = "okio" }
@@ -192,12 +192,24 @@ coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-bom = { module = "io.coil-kt:coil-bom", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
+[bundles]
+androidx-compose-core = [
+  "androidx-compose-foundation",
+  "androidx-compose-runtime",
+]
+androidx-compose-core-ui = [
+  "androidx-compose-runtime",
+  "androidx-compose-foundation",
+  "androidx-compose-ui",
+  "androidx-compose-animation",
+  "androidx-compose-material3",
+]
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-noarg = { id = "org.jetbrains.kotlin.plugin.noarg", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
@@ -206,3 +218,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 moshix-ir = { id = "dev.zacsweers.moshix", version.ref = "moshix" }
 anvil = { id = "com.squareup.anvil", version.ref = "anvil" }
 molecule = { id = "app.cash.molecule", version.ref = "molecule" }
+versions = { id = "com.github.ben-manes.versions", version = "0.48.0" }

@@ -1,7 +1,7 @@
 plugins {
-  id("com.android.library")
-  kotlin("android")
-  kotlin("kapt")
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.ksp)
 }
 
 android.namespace = "dev.efemoney.lexiko"
@@ -14,7 +14,7 @@ dependencies {
   implementation(libs.kotlinx.coroutines.android)
 
   implementation(libs.dagger)
-  kapt(libs.dagger.compiler)
+  ksp(libs.dagger.compiler)
 
   api(libs.ktor.client)
   api(libs.ktor.client.okHttp)

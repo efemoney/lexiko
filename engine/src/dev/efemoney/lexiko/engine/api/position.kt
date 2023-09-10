@@ -2,7 +2,6 @@
 
 package dev.efemoney.lexiko.engine.api
 
-import dev.efemoney.lexiko.engine.impl.Direction
 import dev.efemoney.lexiko.engine.impl.packInts
 import dev.efemoney.lexiko.engine.impl.requireIn
 import dev.efemoney.lexiko.engine.impl.unpackInt1
@@ -13,8 +12,8 @@ value class TilePosition private constructor(private val packed: Long) {
 
   constructor(row: Int, col: Int) : this(
     packInts(
-      row.requireIn(Range),
-      col.requireIn(Range),
+      row.requireIn(Range) { "Row[$row] is not in range $Range" },
+      col.requireIn(Range) { "Row[$col] is not in range $Range" },
     )
   )
 
@@ -22,24 +21,32 @@ value class TilePosition private constructor(private val packed: Long) {
 
   val col get() = unpackInt2(packed)
 
-  inline operator fun component1() = row
-
-  inline operator fun component2() = col
-
-  internal inline fun next(direction: Direction) = when (direction) {
-    Direction.Vertical -> TilePosition((row + 1).coerceAtMost(MaxIndex), col)
-    Direction.Horizontal -> TilePosition(row, (col + 1).coerceAtMost(MaxIndex))
+  inline fun next(direction: Direction, count: Int = 1) = when (direction) {
+    Direction.Vertical -> TilePosition(row + count, col)
+    Direction.Horizontal -> TilePosition(row, col + count)
   }
 
-  internal inline fun prev(direction: Direction) = when (direction) {
-    Direction.Vertical -> TilePosition((row - 1).coerceAtLeast(MinIndex), col)
-    Direction.Horizontal -> TilePosition(row, (col - 1).coerceAtLeast(MinIndex))
+  inline fun prev(direction: Direction, count: Int = 1) = when (direction) {
+    Direction.Vertical -> TilePosition(row - count, col)
+    Direction.Horizontal -> TilePosition(row, col - count)
   }
 
   companion object {
-    const val MinIndex = 0
-    const val MaxIndex = 14
-    internal val Range = MinIndex..MaxIndex
-    internal val Center = TilePosition(7, 7)
+    val Range = 0..14
   }
 }
+
+enum class Direction { Horizontal, Vertical }
+
+fun positions(from: TilePosition, to: TilePosition): Sequence<TilePosition> {
+  val direction = when {
+    from == to -> return sequenceOf(from)
+    from.row == to.row -> Direction.Horizontal
+    from.col == to.col -> Direction.Vertical
+    else -> error("Cannot find a path from: $from - to: $to")
+  }
+  return generateSequence(from) { if (it == to) null else it.next(direction) }
+}
+
+fun positions(from: TilePosition, inDirection: Direction): Sequence<TilePosition> =
+  generateSequence(from) { it.next(inDirection) }

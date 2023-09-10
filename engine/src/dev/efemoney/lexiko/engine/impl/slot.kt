@@ -3,7 +3,9 @@ package dev.efemoney.lexiko.engine.impl
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import dev.efemoney.lexiko.engine.api.Direction
 import dev.efemoney.lexiko.engine.api.MutableTileSlot
+import dev.efemoney.lexiko.engine.api.OnConflict
 import dev.efemoney.lexiko.engine.api.Tile
 import dev.efemoney.lexiko.engine.api.TileMultiplier
 import dev.efemoney.lexiko.engine.api.TilePosition
@@ -46,11 +48,16 @@ internal class TileSlot(
 
   override var tile by mutableStateOf(initialTile)
 
-  context(BoardImpl)
-  internal fun next(direction: Direction) = get(position.next(direction))
+  internal fun put(tile: Tile, onConflict: OnConflict = OnConflict.DoNothing) {
+    this.tile?.let { onConflict(this, it, tile) }
+    this.tile = tile
+  }
 
   context(BoardImpl)
-  internal fun prev(direction: Direction) = get(position.prev(direction))
+  internal fun next(direction: Direction, count: Int = 1) = get(position.next(direction, count))
+
+  context(BoardImpl)
+  internal fun prev(direction: Direction, count: Int = 1) = get(position.prev(direction, count))
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -60,8 +67,6 @@ internal class TileSlot(
 
   override fun hashCode() = 31 * position.hashCode() + multiplier.hashCode()
 }
-
-internal enum class Direction { Horizontal, Vertical }
 
 internal interface Array2d<T> {
   operator fun get(row: Int, col: Int): T

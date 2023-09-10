@@ -1,7 +1,6 @@
 plugins {
   application
   alias(libs.plugins.kotlin.jvm)
-  alias(libs.plugins.kotlin.kapt)
   alias(libs.plugins.kotlin.noarg)
   alias(libs.plugins.ksp)
 }
@@ -40,7 +39,7 @@ dependencies {
   implementation(libs.ktor.websockets)
 
   implementation(libs.dagger)
-  kapt(libs.dagger.compiler)
+  ksp(libs.dagger.compiler)
 
   implementation(libs.firebase.admin)
 }

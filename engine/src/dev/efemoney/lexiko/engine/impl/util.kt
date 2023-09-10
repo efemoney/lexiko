@@ -25,8 +25,8 @@ inline fun unpackInt2(value: Long): Int {
 
 // region Lexiko
 
-inline fun Int.requireIn(range: IntRange): Int {
-  require(this in range)
+inline fun Int.requireIn(range: IntRange, lazyMessage: () -> Any): Int {
+  require(this in range, lazyMessage)
   return this
 }
 

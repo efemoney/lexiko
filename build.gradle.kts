@@ -5,9 +5,12 @@ import Build_gradle.ComponentsExtensionT
 import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.AndroidComponentsExtension
+import com.squareup.anvil.plugin.AnvilExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.KaptExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
@@ -16,8 +19,8 @@ plugins {
   alias(libs.plugins.kotlin.android) apply false
   alias(libs.plugins.kotlin.jvm) apply false
   alias(libs.plugins.kotlin.noarg) apply false
-  alias(libs.plugins.kotlin.kapt) apply false
-  id("com.github.ben-manes.versions") version "0.46.0"
+  alias(libs.plugins.anvil) apply false
+  alias(libs.plugins.versions)
 }
 
 subprojects {
@@ -25,8 +28,8 @@ subprojects {
   AllTheBoms()
   TestsConvention()
   AndroidConvention()
-  KaptConvention()
   KotlinConvention()
+  AnvilConvention()
   ComposeConvention()
   UseMoshiVersion()
   SimpleLayoutConvention()
@@ -83,6 +86,14 @@ fun Project.AllTheBoms() {
         }
       }
     }
+
+  configurations.configureEach {
+    resolutionStrategy.eachDependency {
+      if (requested.group == libs.kotlinpoet.ksp.get().group) {
+        useVersion(libs.versions.kotlinpoet.get())
+      }
+    }
+  }
 }
 
 fun Project.TestsConvention() {
@@ -116,66 +127,65 @@ fun Project.AndroidConvention() {
   }
 }
 
-fun Project.KaptConvention() {
-  pluginManager.withPlugin("kotlin-kapt") {
-    configure<KaptExtension> {
-      correctErrorTypes = true
-      mapDiagnosticLocations = true
-      arguments {
-        arg("dagger.fastInit", "enabled")
-        arg("dagger.experimentalDaggerErrorMessages", "enabled")
-      }
+fun Project.KotlinConvention() {
+  pluginManager.withAnyKotlinPlugin {
+    kotlin {
+      jvmToolchain(libs.versions.jvm.get().toInt())
+      if (this is KotlinJvmProjectExtension) compilerOptions.configure()
+      if (this is KotlinAndroidProjectExtension) compilerOptions.configure()
     }
   }
 }
 
-fun Project.KotlinConvention() {
+fun KotlinJvmCompilerOptions.configure() {
+  apiVersion = KOTLIN_1_9
+  languageVersion = KOTLIN_1_9
+  verbose = true
+  javaParameters = true
+  progressiveMode = true
+  optIn.addAll(
+    "kotlin.RequiresOptIn",
+    "kotlin.ExperimentalStdlibApi",
+    "kotlin.ExperimentalMultiplatform",
+    "kotlin.time.ExperimentalTime",
+    "kotlin.experimental.ExperimentalTypeInference",
+    "kotlinx.coroutines.FlowPreview",
+    "kotlinx.coroutines.ExperimentalCoroutinesApi",
+    "coil.annotation.ExperimentalCoilApi",
+    "dev.efemoney.lexiko.engine.internal.InternalEngineApi",
+  )
+  freeCompilerArgs.addAll(
+    "-XXLanguage:+ValueClasses",
+    "-XXLanguage:+ContextReceivers",
+    "-XXLanguage:+BreakContinueInInlineLambdas",
+    "-XXLanguage:+UnitConversionsOnArbitraryExpressions",
+    "-XXLanguage:+PackagePrivateFileClassesWithAllPrivateMembers", // KT-10884
 
-  pluginManager.withAnyKotlinPlugin {
+    "-Xself-upper-bound-inference",
+    "-Xunrestricted-builder-inference",
+    "-Xjsr305=strict",
+    "-Xassertions=jvm", // https://publicobject.com/2019/11/18/kotlins-assert-is-not-like-javas-assert/
+    "-Xjvm-default=all", // https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
+    "-Xemit-jvm-type-annotations", // useful for static analysis tools or annotation processors.
+    "-Xproper-ieee754-comparisons",
+  )
+}
 
-    kotlin.jvmToolchain(libs.versions.jvm.get().toInt())
-
-    kotlin.sourceSets.configureEach {
-      languageSettings {
-        progressiveMode = true
-        languageVersion = "1.9"
-        apiVersion = "1.9"
-
-        enableLanguageFeature("ValueClasses")
-        enableLanguageFeature("ContextReceivers")
-        enableLanguageFeature("DefinitelyNonNullableTypes")
-        enableLanguageFeature("BreakContinueInInlineLambdas")
-        enableLanguageFeature("UnitConversionsOnArbitraryExpressions")
-        enableLanguageFeature("PackagePrivateFileClassesWithAllPrivateMembers") // KT-10884
-
-        optIn("kotlin.RequiresOptIn")
-        optIn("kotlin.ExperimentalStdlibApi")
-        optIn("kotlin.ExperimentalMultiplatform")
-        optIn("kotlin.time.ExperimentalTime")
-        optIn("kotlin.experimental.ExperimentalTypeInference")
-        optIn("kotlinx.coroutines.FlowPreview")
-        optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
-        optIn("coil.annotation.ExperimentalCoilApi")
-        optIn("dev.efemoney.lexiko.engine.internal.InternalEngineApi")
-      }
+fun Project.AnvilConvention() {
+  pluginManager.withPlugin("com.squareup.anvil") {
+    configure<AnvilExtension> {
+      // We configure Anvil for modules that do not @MergeComponents to:
+      // - generate factories, so that we can skip dagger compiler entirely for the module
+      // - we also disable component merging: the idea here is that modules either merge components
+      //   or they contribute dependencies, never both.
+      val mergesComponent = project.name in listOf("integration")
+      generateDaggerFactories = !mergesComponent
+      disableComponentMerging = !mergesComponent
+      /*syncGeneratedSources = true*/
     }
-
-    tasks.withType<KotlinCompilationTask<*>>().configureEach {
-      compilerOptions {
-        verbose = true
-        freeCompilerArgs.addAll(
-          "-Xself-upper-bound-inference",
-          "-Xunrestricted-builder-inference",
-          "-Xjsr305=strict",
-          "-Xassertions=jvm", // https://publicobject.com/2019/11/18/kotlins-assert-is-not-like-javas-assert/
-          "-Xjvm-default=all", // https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
-          "-Xemit-jvm-type-annotations", // useful for static analysis tools or annotation processors.
-          "-Xproper-ieee754-comparisons",
-        )
-      }
-      if (this is KotlinJvmCompile) compilerOptions {
-        javaParameters = true
-      }
+    dependencies {
+      "anvil"(projects.libs.di.codegen)
+      "implementation"(libs.dagger)
     }
   }
 }
@@ -227,15 +237,22 @@ fun Project.ComposeConvention() {
     }
   }
 
-  // Enable compiler metrics if requested
-  tasks.withType<KotlinCompilationTask<*>>().configureEach {
-    if (providers.gradleProperty("lexiko.compose.enableCompilerReports").isPresent) {
-      val metricsDir = layout.buildDirectory.dir("compose-metrics").get().asFile
-      compilerOptions.freeCompilerArgs.addAll(
-        "-P", "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$metricsDir",
-        "-P", "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$metricsDir",
-      )
+  pluginManager.withAnyKotlinPlugin {
+    kotlin {
+      if (this is KotlinJvmProjectExtension) compilerOptions.configureCompose()
+      if (this is KotlinAndroidProjectExtension) compilerOptions.configureCompose()
     }
+  }
+}
+
+fun KotlinJvmCompilerOptions.configureCompose() {
+  // Enable compiler metrics if requested
+  if (providers.gradleProperty("lexiko.compose.enableCompilerReports").isPresent) {
+    val metricsDir = layout.buildDirectory.dir("compose-metrics").get().asFile
+    freeCompilerArgs.addAll(
+      "-P", "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$metricsDir",
+      "-P", "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$metricsDir",
+    )
   }
 }
 
@@ -254,7 +271,7 @@ fun simpleName(name: String, suffix: String) = if (name == "main") suffix else "
 
 tasks {
   register<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
   }
   dependencyUpdates {
     rejectVersionIf { "ide" in candidate.version || "dev" in candidate.version }

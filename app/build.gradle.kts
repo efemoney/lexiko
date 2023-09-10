@@ -1,7 +1,7 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.kapt)
+  alias(libs.plugins.ksp)
 }
 
 android {
@@ -33,10 +33,8 @@ dependencies {
 
   implementation(libs.coil)
   implementation(libs.coil.compose)
-  implementation(libs.accompanist.insets)
-  implementation(libs.accompanist.insetsUi)
   implementation(libs.accompanist.systemUiController)
 
   implementation(libs.dagger)
-  kapt(libs.dagger.compiler)
+  ksp(libs.dagger.compiler)
 }

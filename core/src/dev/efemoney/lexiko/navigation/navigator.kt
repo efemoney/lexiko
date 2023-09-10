@@ -3,7 +3,6 @@ package dev.efemoney.lexiko.navigation
 import androidx.navigation.NavDirections
 
 interface Navigator {
-
   fun navigate(direction: NavDirections)
 }
 

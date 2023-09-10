@@ -4,17 +4,13 @@ package dev.efemoney.lexiko.engine.impl
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import dev.efemoney.lexiko.engine.api.BagOfTiles
 import dev.efemoney.lexiko.engine.api.Tile
 import dev.efemoney.lexiko.engine.api.TileChar
 import dev.efemoney.lexiko.engine.api.TilePoint
 
-private val AtoZ = 'A'..'Z'
-private const val Space = ' '
-
-internal val TilesCount = listOf(
+internal val TileCounts = listOf(
   1 to "JKQXZ",
   2 to " BCFHMPVWY",
   3 to "G",
@@ -24,10 +20,10 @@ internal val TilesCount = listOf(
   9 to "AI",
   12 to "E",
 ).flatMap { (count, chars) ->
-  chars.map { it to count }
+  chars.map { TileChar(it) to count }
 }.toMap()
 
-internal val TilesPoint = listOf(
+internal val TilePoints = listOf(
   0 to " ",
   1 to "AEILNORSTU",
   2 to "DG",
@@ -37,23 +33,25 @@ internal val TilesPoint = listOf(
   8 to "JX",
   10 to "QZ",
 ).flatMap { (point, chars) ->
-  chars.map { it to point }
+  chars.map { TileChar(it) to point }
 }.toMap()
+
+internal inline fun countOf(char: TileChar) = TileCounts[char]!!
+internal inline fun countOf(tile: Tile) = countOf(tile.char)
 
 internal class BagOfTilesImpl : BagOfTiles {
 
   private val tiles = buildMap {
-    val fillMap = { char: Char ->
-      val count = TilesCount[char]!!
-      val point = TilesPoint[char]!!
-      val tile = Tile(TileChar(char), TilePoint(point))
+    val fillMap = { char: TileChar ->
+      val point = TilePoints[char]!!
       put(
         key = char,
-        value = List(count) { tile }.toMutableStateList(),
+        value = List(countOf(char)) { Tile(char, TilePoint(point)) }
+          .toMutableStateList()
       )
     }
-    AtoZ.forEach(fillMap)
-    fillMap(Space)
+    ('A'..'Z').forEach { fillMap(TileChar(it)) }
+    fillMap(TileChar(' '))
   }
 
   private val remainingChars by derivedStateOf {
@@ -68,9 +66,25 @@ internal class BagOfTilesImpl : BagOfTiles {
     tiles.values.sumOf { it.size }
   }
 
-  override fun pickRandomTiles(count: Int): List<Tile> {
-    check(count <= remainingTilesCount)
-    return List(count) { pick(remainingChars.random()) }
+  override fun pickRandomTile(): Tile? {
+    return when {
+      isEmpty -> null
+      else -> pick(remainingChars.random())
+    }
+  }
+
+  override fun pickRandomTiles(max: Int): List<Tile> {
+    return when {
+      isEmpty -> emptyList()
+      else -> List(max) { pick(remainingChars.random()) }
+    }
+  }
+
+  override fun returnTile(tile: Tile) {
+    tilesOf(tile).run {
+      check(size + 1 <= countOf(tile))
+      add(tile)
+    }
   }
 
   override fun toString(): String = buildString {
@@ -79,14 +93,13 @@ internal class BagOfTilesImpl : BagOfTiles {
     append(')')
   }
 
-  internal inline fun pick(char: Char): Tile = tilesOf(char.uppercaseChar()).removeLast()
-
-  internal inline fun pick(chars: String): List<Tile> = pick(chars = chars.toCharArray())
-
-  internal inline fun pick(vararg chars: Char): List<Tile> = chars.map(::pick)
-
-  private inline fun tilesOf(char: Char): SnapshotStateList<Tile> {
+  internal inline fun pick(char: TileChar): Tile {
     require(char in remainingChars)
-    return tiles[char]!!
+    return tilesOf(char).removeLast()
   }
+
+  internal inline fun pick(chars: CharSequence): List<Tile> = chars.map { pick(TileChar(it)) }
+
+  private inline fun tilesOf(char: TileChar) = tiles[char]!!
+  private inline fun tilesOf(tile: Tile) = tilesOf(tile.char)
 }

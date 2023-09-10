@@ -15,10 +15,19 @@
             <option value="$PROJECT_DIR$/dubbed/compiler-plugin" />
             <option value="$PROJECT_DIR$/dubbed/gradle-plugin" />
             <option value="$PROJECT_DIR$/engine" />
+            <option value="$PROJECT_DIR$/libs" />
+            <option value="$PROJECT_DIR$/libs/di" />
+            <option value="$PROJECT_DIR$/libs/di/codegen" />
+            <option value="$PROJECT_DIR$/libs/di/scopes" />
+            <option value="$PROJECT_DIR$/libs/navigation" />
+            <option value="$PROJECT_DIR$/libs/ui" />
             <option value="$PROJECT_DIR$/server" />
             <option value="$PROJECT_DIR$/statemachine" />
+            <option value="$PROJECT_DIR$/ui" />
+            <option value="$PROJECT_DIR$/ui/board" />
           </set>
         </option>
+        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

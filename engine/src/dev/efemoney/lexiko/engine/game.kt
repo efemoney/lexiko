@@ -2,13 +2,18 @@ package dev.efemoney.lexiko.engine
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import dev.efemoney.lexiko.engine.api.BagOfTiles
 import dev.efemoney.lexiko.engine.api.Board
-import dev.efemoney.lexiko.engine.api.PlayerName
-import dev.efemoney.lexiko.engine.handle.GameEventHandlers
+import dev.efemoney.lexiko.engine.api.PlayerId
+import dev.efemoney.lexiko.engine.events.GameEvent
+import dev.efemoney.lexiko.engine.events.GameEventHandlers
 import dev.efemoney.lexiko.engine.impl.BagOfTilesImpl
 import dev.efemoney.lexiko.engine.impl.BoardImpl
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -17,59 +22,42 @@ import me.tatarka.inject.annotations.Inject
 internal class GameContext(
   private val scope: CoroutineScope,
   private val events: Channel<GameEvent>,
-  val bag: BagOfTilesImpl,
+  val host: PlayerId,
+  val players: SnapshotStateList<PlayerId>,
   val board: BoardImpl,
+  val bag: BagOfTilesImpl,
 ) {
-  fun send(event: GameEvent) {
-    scope.launch { events.send(event) }
-  }
+  fun send(event: GameEvent) = scope.launch { events.send(event) }
 }
 
 @Inject
-class Game internal constructor(
-  private val handlers: GameEventHandlers,
-) {
+class Game internal constructor(private val eventHandlers: GameEventHandlers) {
 
-  @Composable fun present(events: Channel<GameEvent>): GameState {
+  @Composable
+  fun rememberGameState(host: PlayerId, events: Channel<GameEvent>): GameState =
+    with(rememberGameContext(host, events)) { GameState(bag, board) }
+
+  @Composable
+  private fun rememberGameContext(host: PlayerId, events: Channel<GameEvent>): GameContext {
     val scope = rememberCoroutineScope()
-    val context = remember(scope, events) {
-      GameContext(scope, events, BagOfTilesImpl(), BoardImpl())
+    val context = remember(scope, events, host) {
+      GameContext(
+        scope = scope,
+        events = events,
+        host = host,
+        players = mutableStateListOf(host),
+        board = BoardImpl(),
+        bag = BagOfTilesImpl(),
+      )
     }
-    with(context) {
-      LaunchedEffect(context, events) {
-        for (event in events) handlers.handle(event)
+    LaunchedEffect(context) {
+      // handle events concurrently in separate coroutines
+      for (event in events) launch(CoroutineName("Handling: $event")) {
+        with(context) { eventHandlers.handle(event) }
       }
-      return GameState(players(), board())
     }
-  }
-
-  context(GameContext)
-  @Composable private fun board(): Board {
-    return board
-  }
-
-  context(GameContext)
-  @Composable private fun players(): GameState.Players {
-    return remember { GameState.Players(emptyList()) }
+    return context
   }
 }
 
-data class GameState(
-  val players: Players,
-  val board: Board,
-) {
-
-  data class Players(
-    val list: List<Player>,
-  ) : List<Player> by list
-
-  data class Player(
-    val name: PlayerName,
-  )
-}
-
-sealed interface GameEvent
-
-data object StartGameEvent : GameEvent
-
-
+data class GameState(val bag: BagOfTiles, val board: Board)
