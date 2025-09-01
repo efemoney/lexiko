@@ -72,7 +72,7 @@ jetbrains-compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling",
 jetbrains-compose-animation = { module = "org.jetbrains.compose.animation:animation", version.ref = "jetbrains-compose" }
 jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "jetbrains-compose" }
 
-jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version = "2.9.2" }
+jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version = "2.9.3" }
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }

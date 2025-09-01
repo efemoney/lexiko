@@ -5,6 +5,10 @@ plugins {
   alias(libs.plugins.metro)
 }
 
+metro {
+  debug = true
+}
+
 kotlin {
   android { namespace = "dev.efemoney.lexiko.app" }
   jvm()

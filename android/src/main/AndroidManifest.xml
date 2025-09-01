@@ -13,7 +13,7 @@
     tools:replace="android:appComponentFactory">
 
     <activity
-      android:name=".LexicoActivity"
+      android:name=".LexikoActivity"
       android:exported="true"
       android:label="Lexiko"
       android:rotationAnimation="seamless"

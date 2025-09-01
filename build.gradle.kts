@@ -66,7 +66,6 @@ subprojects {
   MetroConvention()
   ComposeConvention()
   LintConvention()
-  SimpleLayoutConvention()
 }
 
 // region Conventions
@@ -111,16 +110,19 @@ fun Project.JvmTargetConvention() {
 fun Project.KotlinConvention() {
   withAnyKotlinPlugin {
     kotlin {
+      // optIn at the source set level because of IDE quirks
+      sourceSets.configureEach {
+        languageSettings {
+          optIn("kotlin.ExperimentalStdlibApi")
+          optIn("kotlin.ExperimentalMultiplatform")
+          optIn("kotlin.time.ExperimentalTime")
+          optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+          optIn("dev.efemoney.lexiko.engine.api.InternalEngineApi")
+        }
+      }
       compilerOptions {
         verbose = true
         progressiveMode = true
-        optIn./*append*/addAll(
-          "kotlin.ExperimentalStdlibApi",
-          "kotlin.ExperimentalMultiplatform",
-          "kotlin.time.ExperimentalTime",
-          "kotlinx.coroutines.ExperimentalCoroutinesApi",
-          "dev.efemoney.lexiko.engine.api.InternalEngineApi",
-        )
         freeCompilerArgs./*append*/addAll(
           "-Xannotations-in-metadata", // KT-75736
           "-Xconsistent-data-class-copy-visibility", // KT-11914
@@ -220,7 +222,11 @@ fun Project.MetroConvention() {
         reportsDestination = dir
       }
     }
-
+    withAnyAndroidPlugin {
+      dependencies {
+        "implementation"(projects.libsDi)
+      }
+    }
     withKotlinJvmOrAndroidPlugins {
       dependencies {
         "implementation"(projects.libsDi)
@@ -277,36 +283,36 @@ fun Project.SimpleLayoutConvention() {
 
   withPlugin("java") {
     the<JavaPluginExtension>().sourceSets.configureEach {
-      java.setSrcDirs(listOf(simpleName(name, "src")))
-      resources.setSrcDirs(listOf(simpleName(name, "resources")))
+      java.srcDirs(simpleName(name, "src"))
+      resources.srcDirs(simpleName(name, "resources"))
     }
   }
 
   withAnyKotlinPlugin {
     kotlin.sourceSets.configureEach {
-      kotlin.setSrcDirs(listOf(simpleName(name, "src")))
-      resources.setSrcDirs(listOf(simpleName(name, "resources")))
+      kotlin.srcDirs(simpleName(name, "src"))
+      resources.srcDirs(simpleName(name, "resources"))
     }
   }
 
   withAnyAndroidPlugin {
     android.sourceSets.configureEach {
+      java.setSrcDirs(emptyList<String>()) // no java sources
       // AS & IntelliJ map (roughly) a source set to a 'module'
       // This is important because in AS, whatever folder the manifest.xml file lives in becomes a source root
       // according to this comment https://issuetracker.google.com/issues/232007221#comment13
       // We keep manifest files in their own unique folders so intellij does not choke on "duplicate source roots"
       manifest.srcFile("$name/AndroidManifest.xml")
-      java.setSrcDirs(listOf(simpleName(name, "src")))
-      kotlin.setSrcDirs(listOf(simpleName(name, "src")))
-      resources.setSrcDirs(listOf(simpleName(name, "resources")))
-      res.setSrcDirs(listOf(simpleName(name, "res")))
-      assets.setSrcDirs(listOf(simpleName(name, "assets")))
-      aidl.setSrcDirs(listOf(simpleName(name, "aidl")))
-      renderscript.setSrcDirs(listOf(simpleName(name, "renderscript")))
-      baselineProfiles.setSrcDirs(listOf(simpleName(name, "baselineProfiles")))
-      jniLibs.setSrcDirs(listOf(simpleName(name, "jniLibs")))
-      shaders.setSrcDirs(listOf(simpleName(name, "shaders")))
-      mlModels.setSrcDirs(listOf(simpleName(name, "mlModels")))
+      kotlin.srcDirs(simpleName(name, "src"))
+      resources.srcDirs(simpleName(name, "resources"))
+      res.srcDirs(simpleName(name, "res"))
+      assets.srcDirs(simpleName(name, "assets"))
+      aidl.srcDirs(simpleName(name, "aidl"))
+      renderscript.srcDirs(simpleName(name, "renderscript"))
+      baselineProfiles.srcDirs(simpleName(name, "baselineProfiles"))
+      jniLibs.srcDirs(simpleName(name, "jniLibs"))
+      shaders.srcDirs(simpleName(name, "shaders"))
+      mlModels.srcDirs(simpleName(name, "mlModels"))
     }
   }
 }
@@ -353,9 +359,9 @@ fun simpleName(name: String, suffix: String) = if (name == "main") suffix else "
 // endregion
 
 tasks {
-  register<Delete>("clean") {
+  /*register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
-  }
+  }*/
   dependencyUpdates {
     rejectVersionIf {
       "SNAPSHOT" in candidate.version
@@ -492,8 +498,12 @@ open class AppliedKotlinPlugin<T : KotlinProjectExtension>(applied: AppliedPlugi
   inline fun KotlinProjectExtension.compilerOptions(action: Action<KotlinCommonCompilerOptions>) {
     if (this is KotlinJvmProjectExtension) action.execute(compilerOptions)
     if (this is KotlinAndroidProjectExtension) action.execute(compilerOptions)
-    if (this is KotlinMultiplatformExtension) targets.configureEach {
-      action.execute((this as HasConfigurableKotlinCompilerOptions<*>).compilerOptions)
+    if (this is KotlinMultiplatformExtension) {
+      targets.configureEach {
+        if (this is HasConfigurableKotlinCompilerOptions<*>) {
+          action.execute(compilerOptions)
+        }
+      }
     }
   }
 

@@ -6,28 +6,24 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import dev.efemoney.lexiko.app.di.AppGraph
-import dev.efemoney.lexiko.ui.LexikoTheme
+import dev.efemoney.lexiko.di.AppScope
+import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metro.Inject
 
 internal class LexikoApp : Application() {
-  lateinit var component: AppGraph
+  lateinit var graph: AppGraph
   override fun onCreate() {
     super.onCreate()
-    component = creGra
+    graph = AppGraph()
   }
 }
 
-@Inject
-internal class LexicoActivity : ComponentActivity() {
+@ContributesIntoSet(AppScope::class)
+internal class LexikoActivity @Inject constructor() : ComponentActivity() {
   private inline val app get() = applicationContext as LexikoApp
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
-
-    val graph =
-    setContent {
-      LexikoTheme {
-
-      }
-    }
+    setContent { LexikoEntryPoint(app.graph) }
   }
 }

@@ -18,7 +18,7 @@ dependencies {
   implementation(projects.presentationNav3)
   implementation(projects.uiCommon)
   implementation(projects.uiLobby)
-  implementation(projects.appCommon)
+  implementation(projects.app)
 
   implementation(libs.androidx.core)
   implementation(libs.androidx.appcompat)

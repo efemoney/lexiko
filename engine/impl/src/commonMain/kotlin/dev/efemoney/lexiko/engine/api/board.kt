@@ -1,6 +1,7 @@
 package dev.efemoney.lexiko.engine.api
 
 import dev.efemoney.lexiko.engine.impl.DefaultBoard
+import kotlin.jvm.JvmInline
 
 fun Board(tilePlacement: TilePlacement = TilePlacement.None): Board =
   DefaultBoard(initialTilePlacement = tilePlacement)

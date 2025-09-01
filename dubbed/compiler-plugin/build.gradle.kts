@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
   compileOnly(libs.kotlin.compiler.embeddable)
-  implementation(libs.kotlin.stdlib)
   implementation(libs.kotlinpoet)
 
   testImplementation(libs.kotlin.test)

@@ -12,10 +12,6 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.serializer
 
-interface DeepLinkResolvable {
-
-}
-
 inline fun <reified T : Screen> resolveUri(base: Uri, screen: T): Uri {
   return Json.encodeToJsonElement(serializer<T>(), screen).jsonObject
     .ifEmpty { return base }

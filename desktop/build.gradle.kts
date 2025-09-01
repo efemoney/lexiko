@@ -5,9 +5,14 @@ plugins {
   alias(libs.plugins.metro)
 }
 
-compose.desktop {
-  application {
-    mainClass = "dev.efemoney.lexiko.app.LexikoApp"
+compose {
+  android {
+
+  }
+  desktop {
+    application {
+      mainClass = "dev.efemoney.lexiko.app.LexikoApp"
+    }
   }
 }
 
@@ -18,7 +23,7 @@ metro {
 dependencies {
   implementation(projects.libsUtil)
   implementation(projects.uiCommon)
-  implementation(projects.appCommon)
+  implementation(projects.app)
 
   implementation(compose.desktop.common)
   implementation(compose.desktop.currentOs)

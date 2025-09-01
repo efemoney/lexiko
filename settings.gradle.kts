@@ -57,9 +57,9 @@ include(
   ":presentation-circuit",
   ":ui-common",
   ":ui-lobby",
-  ":app-common",
-  ":android",
+  ":app",
   ":desktop",
+  ":android",
   //":iOS",
 )
 

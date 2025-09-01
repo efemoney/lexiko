@@ -1,14 +1,15 @@
 plugins {
   alias(libs.plugins.kotlin.multiplatform)
-  alias(libs.plugins.android.multiplatform)
+//  alias(libs.plugins.android.multiplatform)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.metro)
   alias(libs.plugins.poko)
 }
 
 kotlin {
-  android {}
+//  android {}
   jvm()
+//  iosArm64()
 
   sourceSets {
     commonMain.dependencies {
@@ -16,8 +17,8 @@ kotlin {
       implementation(libs.androidx.collection)
       implementation(libs.kotlinx.coroutines.core)
     }
-    androidMain.dependencies {
+    /*androidMain.dependencies {
       implementation(libs.kotlinx.coroutines.android)
-    }
+    }*/
   }
 }
