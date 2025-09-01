@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="testRunner" value="CHOOSE_PER_TEST" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="#JAVA_HOME" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/android" />
+            <option value="$PROJECT_DIR$/app-common" />
+            <option value="$PROJECT_DIR$/desktop" />
+            <option value="$PROJECT_DIR$/engine/api" />
+            <option value="$PROJECT_DIR$/engine/impl" />
+            <option value="$PROJECT_DIR$/libs-di" />
+            <option value="$PROJECT_DIR$/libs-util" />
+            <option value="$PROJECT_DIR$/presentation-api" />
+            <option value="$PROJECT_DIR$/presentation-circuit" />
+            <option value="$PROJECT_DIR$/presentation-nav3" />
+            <option value="$PROJECT_DIR$/ui-common" />
+            <option value="$PROJECT_DIR$/ui-lobby" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
