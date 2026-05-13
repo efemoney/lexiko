@@ -4,18 +4,13 @@ plugins {
   alias(libs.plugins.metro)
 }
 
-android {
-  namespace = "dev.efemoney.lexiko.app"
-}
-
 metro {
   debug = true
 }
 
 dependencies {
   implementation(projects.libsUtil)
-  implementation(projects.presentationApi)
-  implementation(projects.presentationNav3)
+  implementation(projects.presentation)
   implementation(projects.uiCommon)
   implementation(projects.uiLobby)
   implementation(projects.app)

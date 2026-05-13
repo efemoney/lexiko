@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.multiplatform)
   alias(libs.plugins.android.multiplatform)
+  alias(libs.plugins.poko)
 }
 
 kotlin {
@@ -10,9 +11,10 @@ kotlin {
 
   sourceSets {
     commonMain.dependencies {
-      api(libs.jetbrains.compose.runtime)
+      api(libs.androidx.compose.runtime)
       api(libs.jetbrains.compose.foundation)
       api(libs.jetbrains.compose.ui)
+      api(libs.jetbrains.compose.material3)
       api(libs.coil.compose)
     }
   }

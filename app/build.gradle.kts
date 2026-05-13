@@ -16,8 +16,7 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(projects.libsUtil)
-      implementation(projects.presentationApi)
-      implementation(projects.presentationNav3)
+      implementation(projects.presentation)
       implementation(projects.uiCommon)
       implementation(projects.uiLobby)
     }

@@ -1,24 +1,23 @@
 package dev.efemoney.lexiko.app
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.retain
-import dev.efemoney.lexiko.app.di.AppGraph
+import androidx.compose.runtime.retain.retain
+import dev.efemoney.lexiko.app.di.NavRegistryAccessor
+import dev.efemoney.lexiko.di.ForegroundScope
+import dev.efemoney.lexiko.di.castAs
 import dev.efemoney.lexiko.lobby.LobbyScreen
 import dev.efemoney.lexiko.presentation.nav3.NavDisplay
-import dev.efemoney.lexiko.presentation.nav3.di.NavigationAccessors
-import dev.efemoney.lexiko.presentation.nav3.rememberNavBackStack
 import dev.efemoney.lexiko.ui.LexikoTheme
-import dev.zacsweers.metro.asContribution
 
 @Composable
-fun LexikoEntryPoint(app: AppGraph) {
-  val graph = retain(app) { app.foreground.create() }
-  val navRegistry = graph.asContribution<NavigationAccessors>().registry
-  val navBackStack = rememberNavBackStack(LobbyScreen)
+inline fun LexikoEntryPoint(
+  crossinline foregroundGraph: () -> ForegroundScope.Graph,
+) {
+  val graph = retain { foregroundGraph() }
   LexikoTheme {
     NavDisplay(
-      registry = navRegistry,
-      backStack = navBackStack,
+      navRoot = LobbyScreen,
+      navRegistry = graph.castAs<NavRegistryAccessor>().registry,
     )
   }
 }

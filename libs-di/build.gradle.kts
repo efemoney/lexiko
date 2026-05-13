@@ -8,11 +8,4 @@ kotlin {
   android { namespace = "dev.efemoney.lexiko.di" }
   jvm()
   iosArm64()
-
-  sourceSets {
-    commonMain.dependencies {
-    }
-    androidMain.dependencies {
-    }
-  }
 }

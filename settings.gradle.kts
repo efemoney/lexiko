@@ -10,6 +10,7 @@ pluginManagement {
         includeGroupAndSubgroups("com.google")
         includeGroupAndSubgroups("androidx")
       }
+      mavenContent { releasesOnly() }
     }
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") {
       content {
@@ -31,6 +32,7 @@ dependencyResolutionManagement {
         includeGroupAndSubgroups("com.google")
         includeGroupAndSubgroups("androidx")
       }
+      mavenContent { releasesOnly() }
     }
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") {
       content {
@@ -45,16 +47,13 @@ dependencyResolutionManagement {
 
 rootProject.name = "lexiko"
 
-//includeBuild("../../OSS/nav3-recipes")
-
 include(
   ":engine-api",
   ":engine-impl",
   ":libs-di",
   ":libs-util",
-  ":presentation-api",
-  ":presentation-nav3",
-  ":presentation-circuit",
+  ":libs-networking",
+  ":presentation",
   ":ui-common",
   ":ui-lobby",
   ":app",

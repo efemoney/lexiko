@@ -11,7 +11,8 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(libs.kotlinx.coroutines.core)
-      implementation(libs.jetbrains.compose.runtime)
+      implementation(libs.androidx.compose.runtime)
+      implementation(libs.androidx.compose.runtime.retain)
     }
     androidMain.dependencies {
       implementation(libs.kotlinx.coroutines.android)

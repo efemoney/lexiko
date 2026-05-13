@@ -1,5 +1,3 @@
-@file:JvmName("LexikoApp")
-
 package dev.efemoney.lexiko.app
 
 import androidx.compose.runtime.Composable
@@ -12,5 +10,8 @@ fun main() {
 }
 
 @Composable
-private fun LexikoEntryPoint() {
+internal fun LexikoEntryPoint(
+  //foregroundGraph: ForegroundGraph,
+) {
+
 }

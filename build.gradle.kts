@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "FunctionName", "UnstableApiUsage", "UNCHECKED_CAST")
-@file:OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalSwiftExportDsl::class)
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalSwiftExportDsl::class, DelicateMetroGradleApi::class)
 
+import com.android.build.api.dsl.AndroidSourceDirectorySet
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
@@ -11,9 +12,11 @@ import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.KotlinMultiplatformAndroidComponentsExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.google.devtools.ksp.gradle.KspExtension
+import dev.zacsweers.metro.gradle.DelicateMetroGradleApi
 import dev.zacsweers.metro.gradle.DiagnosticSeverity
 import dev.zacsweers.metro.gradle.MetroPluginExtension
 import org.gradle.internal.extensions.stdlib.capitalized
+import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.HasConfigurableKotlinCompilerOptions
@@ -47,7 +50,6 @@ plugins {
   alias(libs.plugins.ddependencyGuard) apply false
   alias(libs.plugins.spotlight) apply false
   alias(libs.plugins.conveyor) apply false
-  alias(libs.plugins.anvil) apply false
   alias(libs.plugins.poko) apply false
   alias(libs.plugins.ktor) apply false
   alias(libs.plugins.metro) apply false
@@ -100,7 +102,7 @@ fun Project.JvmTargetConvention() {
   }
 
   withAnyAndroidPlugin {
-    android.compileOptions {
+    android.compileOptions.apply {
       sourceCompatibility = JavaVersion.toVersion(target)
       targetCompatibility = JavaVersion.toVersion(target)
     }
@@ -213,7 +215,7 @@ fun Project.KspConvention() {
 fun Project.MetroConvention() {
   withPlugin("dev.zacsweers.metro") {
     configure<MetroPluginExtension> {
-      publicProviderSeverity = DiagnosticSeverity.ERROR
+      publicScopedProviderSeverity = DiagnosticSeverity.ERROR
     }
     withPlugin("reporting-base") {
       configure<MetroPluginExtension> {
@@ -222,20 +224,23 @@ fun Project.MetroConvention() {
         reportsDestination = dir
       }
     }
-    withAnyAndroidPlugin {
-      dependencies {
-        "implementation"(projects.libsDi)
+
+    if (path != projects.libsDi.path) {
+      withAnyAndroidPlugin {
+        dependencies {
+          "implementation"(projects.libsDi)
+        }
       }
-    }
-    withKotlinJvmOrAndroidPlugins {
-      dependencies {
-        "implementation"(projects.libsDi)
+      withKotlinJvmPlugin {
+        dependencies {
+          "implementation"(projects.libsDi)
+        }
       }
-    }
-    withMultiplatformPlugin {
-      kotlin {
-        sourceSets.commonMain.dependencies {
-          implementation(projects.libsDi)
+      withMultiplatformPlugin {
+        kotlin {
+          sourceSets.commonMain.dependencies {
+            implementation(projects.libsDi)
+          }
         }
       }
     }
@@ -258,15 +263,34 @@ fun Project.ComposeConvention() {
         metricsDestination = dir
       }
     }
-    withKotlinJvmOrAndroidPlugins {
+    withAnyAndroidPlugin {
       dependencies {
-        "implementation"(libs.jetbrains.compose.runtime)
+        "implementation"(libs.androidx.compose.runtime)
+      }
+    }
+    withKotlinJvmPlugin {
+      dependencies {
+        "implementation"(libs.androidx.compose.runtime)
       }
     }
     withMultiplatformPlugin {
       kotlin {
         sourceSets.commonMain.dependencies {
-          implementation(libs.jetbrains.compose.runtime)
+          implementation(libs.androidx.compose.runtime)
+        }
+      }
+    }
+  }
+  withPlugin("org.jetbrains.compose") {
+    val compose = dependencies.the<ComposePlugin.Dependencies>()
+    configurations.configureEach {
+      resolutionStrategy {
+        eachDependency {
+          if (requested.group == "org.jetbrains.compose.desktop") {
+            if (requested.name == "REPLACE_WITH_CURRENT_OS") {
+              useTarget(compose.desktop.currentOs)
+            }
+          }
         }
       }
     }
@@ -297,22 +321,22 @@ fun Project.SimpleLayoutConvention() {
 
   withAnyAndroidPlugin {
     android.sourceSets.configureEach {
-      java.setSrcDirs(emptyList<String>()) // no java sources
+      java.directories.clear() // no java sources
       // AS & IntelliJ map (roughly) a source set to a 'module'
       // This is important because in AS, whatever folder the manifest.xml file lives in becomes a source root
       // according to this comment https://issuetracker.google.com/issues/232007221#comment13
       // We keep manifest files in their own unique folders so intellij does not choke on "duplicate source roots"
       manifest.srcFile("$name/AndroidManifest.xml")
-      kotlin.srcDirs(simpleName(name, "src"))
-      resources.srcDirs(simpleName(name, "resources"))
-      res.srcDirs(simpleName(name, "res"))
-      assets.srcDirs(simpleName(name, "assets"))
-      aidl.srcDirs(simpleName(name, "aidl"))
-      renderscript.srcDirs(simpleName(name, "renderscript"))
-      baselineProfiles.srcDirs(simpleName(name, "baselineProfiles"))
-      jniLibs.srcDirs(simpleName(name, "jniLibs"))
-      shaders.srcDirs(simpleName(name, "shaders"))
-      mlModels.srcDirs(simpleName(name, "mlModels"))
+      kotlin.setDirectory(simpleName(name, "src"))
+      resources.setDirectory(simpleName(name, "resources"))
+      res.setDirectory(simpleName(name, "res"))
+      assets.setDirectory(simpleName(name, "assets"))
+      aidl.setDirectory(simpleName(name, "aidl"))
+      renderscript.setDirectory(simpleName(name, "renderscript"))
+      baselineProfiles.setDirectory(simpleName(name, "baselineProfiles"))
+      jniLibs.setDirectory(simpleName(name, "jniLibs"))
+      shaders.setDirectory(simpleName(name, "shaders"))
+      mlModels.setDirectory(simpleName(name, "mlModels"))
     }
   }
 }
@@ -355,6 +379,11 @@ inline fun <reified D : Dependency> Configuration.onDependency(action: Action<D>
 }
 
 fun simpleName(name: String, suffix: String) = if (name == "main") suffix else "$name-$suffix"
+
+fun AndroidSourceDirectorySet.setDirectory(dir: String) {
+  directories.clear()
+  directories.add(dir)
+}
 
 // endregion
 
@@ -406,7 +435,14 @@ inline fun Project.withAnyKotlinPlugin(action: Action<AppliedKotlinPlugin<Kotlin
     "org.jetbrains.kotlin.jvm",
     "org.jetbrains.kotlin.android",
     "org.jetbrains.kotlin.multiplatform",
-  ) { action.execute(AppliedKotlinPlugin(this)) }
+  ) {
+    action.execute(AppliedKotlinPlugin(this))
+  }
+  withAnyAndroidPlugin {
+    if (androidComponents.pluginVersion.major >= 9 && android.enableKotlin) {
+      action.execute(AppliedKotlinPlugin(this))
+    }
+  }
 }
 
 inline fun Project.withAnyAndroidPlugin(
@@ -445,6 +481,12 @@ inline fun Project.withAndroidMultiplatformTargetPlugin(
 
 inline fun Project.withMultiplatformPlugin(action: Action<AppliedKotlinPlugin<KotlinMultiplatformExtension>>) {
   withPlugin("org.jetbrains.kotlin.multiplatform") {
+    action.execute(AppliedKotlinPlugin(this))
+  }
+}
+
+inline fun Project.withKotlinJvmPlugin(action: Action<AppliedKotlinPlugin<KotlinProjectExtension>>) {
+  withPlugin("org.jetbrains.kotlin.jvm") {
     action.execute(AppliedKotlinPlugin(this))
   }
 }

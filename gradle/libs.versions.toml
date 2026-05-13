@@ -2,36 +2,38 @@
 jvm = "21"
 jvmTarget = "17"
 
-agp = "9.0.0-alpha03"
-screenshot = "0.0.1-alpha11"
-androidx-core = "1.17.0"
-androidx-annotation = "1.9.1"
-androidx-appcompat = "1.7.1"
-androidx-activity = "1.10.1"
-androidx-lifecycle = "2.10.0-alpha03"
-androidx-navigation3 = "1.0.0-alpha08"
-androidx-compose-material3 = "1.5.0-alpha03"
-androidx-compose = "1.10.0-alpha02"
-jetbrains-compose = "1.10.0+dev2887"
-kotlin = "2.2.20-RC"
-ksp = "2.2.20-RC-2.0.2"
-ktor = "3.2.3"
-datetime = "0.7.1"
-coroutines = "1.10.2"
-serialization = "1.9.0"
-rpc = "0.9.1"
-kotlinInject = "0.7.2"
-kotlinInject-anvil = "0.1.3"
-kotlinpoet = "1.18.1"
-molecule = "2.1.0"
-jacoco = "0.8.13"
-circuit = "0.30.0"
-coil = "3.3.0"
-okio = "3.9.0"
-okhttp = "5.0.0-alpha.14"
-retrofit = "2.11.0"
-dagger = "2.56.2"
-anvil = "0.4.1" #"2.5.0-beta11"
+agp = "9.3.0-alpha04"
+screenshot = "0.0.1-alpha14"
+androidx-core = "1.19.0-alpha02"
+androidx-annotation = "1.10.0"
+androidx-appcompat = "1.8.0-alpha01"
+androidx-activity = "1.13.0"
+androidx-lifecycle = "2.11.0-beta01"
+androidx-compose = "1.12.0-alpha02"
+androidx-compose-material3 = "1.5.0-alpha19"
+androidx-nav3 = "1.2.0-alpha02"
+
+jetbrains-lifecycle = "2.11.10-alpha01+dev4104"
+jetbrains-compose = "1.12.0-alpha01+dev4104"
+jetbrains-compose-material3 = "1.12.0-alpha01+dev4104"
+jetbrains-nav3 = "1.1.10-alpha01+dev4104"
+
+kotlin = "2.3.21"
+ksp = "2.3.7"
+ktor = "3.4.3"
+datetime = "0.8.0"
+coroutines = "1.11.0-rc02"
+serialization = "1.11.0"
+rpc = "0.10.2"
+metro = "1.0.0"
+kotlinpoet = "2.0.0"
+molecule = "2.2.0"
+jacoco = "0.8.14"
+circuit = "0.33.1"
+coil = "3.5.0-beta01"
+okio = "3.10.1"
+okhttp = "5.3.2"
+retrofit = "3.0.0"
 timber = "5.0.1"
 
 [libraries]
@@ -44,15 +46,15 @@ android-tools-desugar = { module = "com.android.tools:desugar_jdk_libs", version
 
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
-androidx-collection = { module = "androidx.collection:collection", version = "1.5.0" }
+androidx-collection = { module = "androidx.collection:collection", version = "1.6.0" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-nav3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
-
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
+androidx-compose-runtime-retain = { module = "androidx.compose.runtime:runtime-retain", version.ref = "androidx-compose" }
 androidx-compose-runtime-desktop = { module = "androidx.compose.runtime:runtime-desktop", version.ref = "androidx-compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
@@ -60,19 +62,21 @@ androidx-compose-ui-util = { module = "androidx.compose.ui:ui-util", version.ref
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-compose-material3" }
+androidx-nav3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "androidx-nav3" }
+androidx-nav3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "androidx-nav3" }
 
-androidx-nav3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "androidx-navigation3" }
-androidx-nav3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "androidx-navigation3" }
-
+jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "jetbrains-lifecycle" }
+jetbrains-lifecycle-viewmodel-nav3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "jetbrains-lifecycle" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jetbrains-compose" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jetbrains-compose" }
 jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "jetbrains-compose" }
 jetbrains-compose-ui-util = { module = "org.jetbrains.compose.ui:ui-util", version.ref = "jetbrains-compose" }
 jetbrains-compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "jetbrains-compose" }
 jetbrains-compose-animation = { module = "org.jetbrains.compose.animation:animation", version.ref = "jetbrains-compose" }
-jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "jetbrains-compose" }
-
-jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version = "2.9.3" }
+jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "jetbrains-compose-material3" }
+jetbrains-compose-desktop = { module = "org.jetbrains.compose.desktop:desktop", version.ref = "jetbrains-compose" }
+jetbrains-compose-desktop-currentOs = { module = "org.jetbrains.compose.desktop:REPLACE_WITH_CURRENT_OS", version.ref = "jetbrains-compose" }
+jetbrains-nav3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "jetbrains-nav3" }
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -100,18 +104,8 @@ coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "
 coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 
-kmpUri = "com.eygraber:uri-kmp:0.0.20"
+uriKmp = "com.eygraber:uri-kmp:0.0.21"
 molecule-runtime = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
-
-circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
-circuit-runtime-presenter = { module = "com.slack.circuit:circuit-runtime-presenter", version.ref = "circuit" }
-circuit-runtime-ui = { module = "com.slack.circuit:circuit-runtime-ui", version.ref = "circuit" }
-circuit-backstack = { module = "com.slack.circuit:circuit-backstack", version.ref = "circuit" }
-circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
-circuitx-android = { module = "com.slack.circuit:circuitx-android", version.ref = "circuit" }
-circuitx-effects = { module = "com.slack.circuit:circuitx-effects", version.ref = "circuit" }
-circuitx-overlays = { module = "com.slack.circuit:circuitx-overlays", version.ref = "circuit" }
-circuitx-gestureNavigation = { module = "com.slack.circuit:circuitx-gesture-navigation", version.ref = "circuit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -127,15 +121,14 @@ kotlin-noarg = { id = "org.jetbrains.kotlin.plugin.noarg", version.ref = "kotlin
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
-kotlinx-rpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version = "rpc" }
+kotlinx-rpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version = "0.10.2" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-anvil = { id = "dev.zacsweers.anvil", version.ref = "anvil" }
-ddependencyGuard = { id = "com.dropbox.dependency-guard", version = "0.5.0" }
-versions = { id = "com.github.ben-manes.versions", version = "0.52.0" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
-idea-ext = { id = "org.jetbrains.gradle.plugin.idea-ext", version = "1.3" }
-conveyor = { id = "dev.hydraulic.conveyor", version = "1.12" }
-poko = { id = "dev.drewhamilton.poko", version = "0.19.3" }
-metro = { id = "dev.zacsweers.metro", version = "0.7.0-2.2.20-RC-alpha04" }
-spotlight = { id = "com.fueledbycaffeine.spotlight", version = "1.3.3" }
+poko = { id = "dev.drewhamilton.poko", version = "0.22.1" }
+metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
+versions = { id = "com.github.ben-manes.versions", version = "0.54.0" }
+ddependencyGuard = { id = "com.dropbox.dependency-guard", version = "0.5.0" }
+idea-ext = { id = "org.jetbrains.gradle.plugin.idea-ext", version = "1.4.1" }
+conveyor = { id = "dev.hydraulic.conveyor", version = "2.0" }
+spotlight = { id = "com.fueledbycaffeine.spotlight", version = "1.6.10" }

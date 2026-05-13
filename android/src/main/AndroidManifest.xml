@@ -5,7 +5,7 @@
 
   <application
     android:name=".LexikoApp"
-    android:appComponentFactory="dev.efemoney.lexiko.app.di.ComponentFactory"
+    android:appComponentFactory="dev.efemoney.lexiko.android.di.ComponentFactory"
     android:enableOnBackInvokedCallback="true"
     android:icon="@null"
     android:supportsRtl="true"

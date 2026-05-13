@@ -6,12 +6,9 @@ plugins {
 }
 
 compose {
-  android {
-
-  }
   desktop {
     application {
-      mainClass = "dev.efemoney.lexiko.app.LexikoApp"
+      mainClass = "dev.efemoney.lexiko.app.LexikoAppKt"
     }
   }
 }
@@ -25,6 +22,6 @@ dependencies {
   implementation(projects.uiCommon)
   implementation(projects.app)
 
-  implementation(compose.desktop.common)
-  implementation(compose.desktop.currentOs)
+  implementation(libs.jetbrains.compose.desktop)
+  implementation(libs.jetbrains.compose.desktop.currentOs)
 }
